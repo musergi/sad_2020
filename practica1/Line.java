@@ -12,7 +12,8 @@ public class Line {
     }
 
     public void moveCursor(int delta) {
-        cursor = (cursor + delta) + stringBuilder.length() % stringBuilder.length();
+        int maxCursor = stringBuilder.length() + 1;
+        cursor = (cursor + delta + maxCursor) % maxCursor);
     }
 
     public void addChar(int code) {
