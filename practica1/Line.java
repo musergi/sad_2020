@@ -12,7 +12,7 @@ public class Line {
     }
 
     public void moveCursor(int delta) {
-        cursor += delta;
+        cursor = (cursor + delta) + stringBuilder.length() % stringBuilder.length();
     }
 
     public void addChar(int code) {
