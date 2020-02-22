@@ -53,10 +53,10 @@ public class EditableBufferedReader extends BufferedReader {
         } else if (characterCode == 0) {
             switch((int) reader.read()) {
                     case 71:
-                        System.out.println('Home pressed');
+                        System.out.println("Home pressed");
                         return CMD_CURSOR_HOME;
                     case 79:
-                        System.out.println('End pressed');
+                        System.out.println("End pressed");
                         return CMD_CURSOR_END;
                 }
         }
