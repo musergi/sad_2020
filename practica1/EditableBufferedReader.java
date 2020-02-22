@@ -8,6 +8,8 @@ public class EditableBufferedReader extends BufferedReader {
 
     private static final int CMD_CURSOR_LEFT = 1;
     private static final int CMD_CURSOR_RIGHT = 2;
+    private static final int CMD_CURSOR_HOME = 3;
+    private static final int CMD_CURSOR_END = 4;
 
     private Reader reader;
     private Line line;
@@ -38,7 +40,7 @@ public class EditableBufferedReader extends BufferedReader {
 
     public int read() throws IOException {
         int characterCode = reader.read();
-        if (characterCode == 27) {
+        if (characterCode == KEY_CODE_ESC) {
             int firstKey = reader.read();
             if (firstKey == KEY_CODE_LEFT_BRACKET) {
                 switch((int) reader.read()) {
@@ -48,6 +50,13 @@ public class EditableBufferedReader extends BufferedReader {
                         return CMD_CURSOR_LEFT;
                 }
             }
+        } else if (characterCode == 0) {
+            switch((int) reader.read()) {
+                    case 71:
+                        return CMD_CURSOR_HOME;
+                    case 79:
+                        return CMD_CURSOR_END;
+                }
         }
         return characterCode;
     }
@@ -62,6 +71,12 @@ public class EditableBufferedReader extends BufferedReader {
                     break;
                 case CMD_CURSOR_RIGHT:
                     line.moveCursor(1);
+                    break;
+                case CMD_CURSOR_HOME:
+                    line.moveCursorStart();
+                    break;
+                case CMD_CURSOR_END:
+                    line.moveCursorEnd();
                     break;
                 case KEY_CODE_BACKSPACE:
                     line.backspace();

@@ -1,5 +1,3 @@
-import java.util.*;
-
 public class Line {
     private StringBuilder stringBuilder;
     private int cursor;
@@ -14,6 +12,14 @@ public class Line {
     public void moveCursor(int delta) {
         int maxCursor = stringBuilder.length() + 1;
         cursor = (cursor + delta + maxCursor) % maxCursor;
+    }
+
+    public void moveCursorStart() {
+        cursor = 0;
+    }
+
+    public void moveCursorEnd() {
+        cursor = stringBuilder.length();
     }
 
     public void addChar(int code) {
