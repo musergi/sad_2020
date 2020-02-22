@@ -48,17 +48,10 @@ public class EditableBufferedReader extends BufferedReader {
                         return CMD_CURSOR_RIGHT;
                     case 'D':
                         return CMD_CURSOR_LEFT;
+                    case 'H':
+                        return CMD_CURSOR_HOME;
                 }
             }
-        } else if (characterCode == 224) {
-            switch((int) reader.read()) {
-                    case 71:
-                        System.out.println("Home pressed");
-                        return CMD_CURSOR_HOME;
-                    case 79:
-                        System.out.println("End pressed");
-                        return CMD_CURSOR_END;
-                }
         }
         return characterCode;
     }
