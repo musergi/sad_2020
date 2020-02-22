@@ -1,17 +1,42 @@
 import java.util.*;
 
 public class Line {
-    private List<Integer> rawInput;
+    private StringBuilder stringBuilder;
+    private int cursor;
+    private boolean insert;
 
     public Line() {
-        rawInput = new ArrayList<>();
+        stringBuilder = new StringBuilder();
+        cursor = 0;
+        insert = false;
     }
 
-    public void addInput(int code) {
-        rawInput.add(code);
+    public void moveCursor(int delta) {
+        cursor += delta;
+    }
+
+    public void addChar(int code) {
+        stringBuilder.insert(cursor, (char) code);
+        cursor++;
+    }
+
+    public void backspace() {
+        stringBuilder.deleteCharAt(cursor - 1);
+        cursor--;
+    }
+
+    public String getDisplayString() {
+        StringBuilder displayString = new StringBuilder();
+        displayString.append((char) 27);
+        displayString.append("[2K");
+        displayString.append('\r');
+        displayString.append(stringBuilder.toString());
+        displayString.append(' ');
+        displayString.append("\033[" + (1 + stringBuilder.length() - cursor) + "D");
+        return displayString.toString();
     }
 
     public String toString() {
-        return Arrays.toString(rawInput.toArray());
+        return stringBuilder.toString();
     }
 }
