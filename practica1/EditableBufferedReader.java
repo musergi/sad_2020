@@ -48,6 +48,8 @@ public class EditableBufferedReader extends BufferedReader {
                         return CMD_CURSOR_RIGHT;
                     case 'D':
                         return CMD_CURSOR_LEFT;
+                    case 'F':
+                        return CMD_CURSOR_END;
                     case 'H':
                         return CMD_CURSOR_HOME;
                 }
