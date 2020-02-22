@@ -50,7 +50,7 @@ public class EditableBufferedReader extends BufferedReader {
                         return CMD_CURSOR_LEFT;
                 }
             }
-        } else if (characterCode == 0) {
+        } else if (characterCode == 224) {
             switch((int) reader.read()) {
                     case 71:
                         System.out.println("Home pressed");
