@@ -43,7 +43,8 @@ public class EditableBufferedReader extends BufferedReader {
         if (characterCode == KEY_CODE_ESC) {
             int firstKey = reader.read();
             if (firstKey == KEY_CODE_LEFT_BRACKET) {
-                switch((int) reader.read()) {
+                int secondKey = reader.read();
+                switch(secondKey) {
                     case 'C':
                         return CMD_CURSOR_RIGHT;
                     case 'D':
@@ -52,6 +53,8 @@ public class EditableBufferedReader extends BufferedReader {
                         return CMD_CURSOR_END;
                     case 'H':
                         return CMD_CURSOR_HOME;
+                    default:
+                        System.out.println(secondKey);
                 }
             }
         }
