@@ -10,6 +10,8 @@ public class EditableBufferedReader extends BufferedReader {
     private static final int CMD_CURSOR_RIGHT = 2;
     private static final int CMD_CURSOR_HOME = 3;
     private static final int CMD_CURSOR_END = 4;
+    private static final int CMD_INSERT = 5;
+    private static final int CMD_DELETE = 6;
 
     private Reader reader;
     private Line line;
@@ -53,8 +55,10 @@ public class EditableBufferedReader extends BufferedReader {
                         return CMD_CURSOR_END;
                     case 'H':
                         return CMD_CURSOR_HOME;
-                    default:
-                        System.out.println(secondKey);
+                    case '2':
+                        return CMD_INSERT;
+                    case '3':
+                        return CMD_DELETE;
                 }
             }
         }
@@ -80,6 +84,9 @@ public class EditableBufferedReader extends BufferedReader {
                     break;
                 case KEY_CODE_BACKSPACE:
                     line.backspace();
+                    break;
+                case CMD_DELETE:
+                    line.delete();
                     break;
                 default:
                     line.addChar(keyCode);

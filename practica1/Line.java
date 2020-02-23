@@ -32,6 +32,10 @@ public class Line {
         cursor--;
     }
 
+    public void delete() {
+        stringBuilder.deleteCharAt(cursor);
+    }
+
     public String getDisplayString() {
         StringBuilder displayString = new StringBuilder();
         displayString.append((char) 27);
