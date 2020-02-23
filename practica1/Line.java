@@ -25,6 +25,9 @@ public class Line {
     public void addChar(int code) {
         stringBuilder.insert(cursor, (char) code);
         cursor++;
+        if (insert && cursor != stringBuilder.length()) {
+            delete();
+        }
     }
 
     public void backspace() {
@@ -34,6 +37,10 @@ public class Line {
 
     public void delete() {
         stringBuilder.deleteCharAt(cursor);
+    }
+
+    public void toggleInsert() {
+        insert = !insert;
     }
 
     public String getDisplayString() {
