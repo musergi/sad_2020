@@ -90,6 +90,9 @@ public class EditableBufferedReader extends BufferedReader {
                 case CMD_DELETE:
                     line.delete();
                     break;
+                case CMD_INSERT:
+                    line.toggleInsert();
+                    break;
                 default:
                     line.addChar(keyCode);
             }
