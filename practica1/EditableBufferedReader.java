@@ -56,8 +56,10 @@ public class EditableBufferedReader extends BufferedReader {
                     case 'H':
                         return CMD_CURSOR_HOME;
                     case '2':
+                        reader.read();
                         return CMD_INSERT;
                     case '3':
+                        reader.read();
                         return CMD_DELETE;
                 }
             }
