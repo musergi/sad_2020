@@ -2,12 +2,6 @@ import java.io.*;
 import java.util.*;
 
 class EditableBufferedReader extends BufferedReader {
-    private static final Set<Integer> specialChars = new HashSet<>() {{
-        add(21);
-        add(27);
-        add(127);
-    }};
-
     private Line line;
 
     public EditableBufferedReader(final Reader in) {
@@ -26,7 +20,7 @@ class EditableBufferedReader extends BufferedReader {
 
     private static void unsetRaw() throws IOException {
         try {
-            String[] cmd = {"/bin/sh", "-c", "stty echo coocked </dev/tty"};
+            String[] cmd = {"/bin/sh", "-c", "stty echo cooked </dev/tty"};
             Runtime.getRuntime().exec(cmd).waitFor();
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -35,15 +29,45 @@ class EditableBufferedReader extends BufferedReader {
 
 
     public int read() throws IOException {
-        int keyCode = 0;
-        while (specialChars.contains(keyCode = super.read())) {
+        while (true) {
+            int keyCode = super.read();
             switch (keyCode) {
+                case 1:
+                    line.home();
+                    System.out.print(line.getDisplayString());
+                    break;
+                case 5:
+                    line.end();
+                    System.out.print(line.getDisplayString());
+                    break;
+                case 21:
+                    line.delete();
+                    System.out.print(line.getDisplayString());
+                    break;
+                case 27:
+                    switch (super.read()) {
+                        case 91:
+                            switch (super.read()) {
+                                case 67:
+                                    line.moveCursor(1);
+                                    System.out.print(line.getDisplayString());
+                                    break;
+                                case 68:
+                                    line.moveCursor(-1);
+                                    System.out.print(line.getDisplayString());
+                                    break;
+                            }
+                            break;
+                    }
+                    break;
                 case 127:
                     line.backspace();
+                    System.out.print(line.getDisplayString());
                     break;
+                default:
+                    return keyCode;
             }
         }
-        return keyCode;
     }
 
 
@@ -52,7 +76,7 @@ class EditableBufferedReader extends BufferedReader {
         int inputChar = 0;
         while((inputChar = read()) != 13) {
             line.addChar((char) inputChar);
-            System.out.println(line);
+            System.out.print(line.getDisplayString());
         }
         unsetRaw();
         return line.toString();
