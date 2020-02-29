@@ -1,9 +1,42 @@
 import java.beans.PropertyChangeSupport;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MultiLine {
     private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
+    private List<StringBuilder> lines;
+    private int cursorRow, cursorColumn;
 
     public MultiLine(ConsoleView consoleView) {
+        lines = new ArrayList<>();
+        lines.add(new StringBuilder());
         propertyChangeSupport.addPropertyChangeListener(consoleView);
+        propertyChangeSupport.firePropertyChange("lines", null, getDisplayString());
+    }
+
+    public void addChar(int charCode) {
+        lines.get(cursorRow).insert(cursorColumn, (char) charCode);
+        cursorColumn++;
+
+        propertyChangeSupport.firePropertyChange("lines", null, getDisplayString());
+    }
+
+    public void newLine() {
+        lines.add(new StringBuilder());
+        cursorRow++;
+        cursorColumn = 0;
+
+        propertyChangeSupport.firePropertyChange("lines", null, getDisplayString());
+    }
+
+    public String getDisplayString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("\033[2J\033[1;1H");
+        for (StringBuilder line: lines) {
+            stringBuilder.append(line.toString());
+            stringBuilder.append("\r\n");
+        }
+        stringBuilder.append("\033[").append(cursorRow + 1).append(";").append(cursorColumn + 1).append("H");
+        return stringBuilder.toString();
     }
 }
