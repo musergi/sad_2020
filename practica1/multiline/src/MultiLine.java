@@ -92,4 +92,12 @@ public class MultiLine {
         stringBuilder.append("\033[").append(cursorRow + 1).append(";").append(cursorColumn + 1).append("H");
         return stringBuilder.toString();
     }
+
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (StringBuilder line: lines) {
+            stringBuilder.append(line.toString()).append('\n');
+        }
+        return stringBuilder.toString();
+    }
 }

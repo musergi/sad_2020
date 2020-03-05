@@ -80,6 +80,6 @@ public class MultiLineEditor extends BufferedReader {
 
         Console.enableEcho();
         Console.setCookedMode();
-        return null;
+        return multiLine.toString();
     }
 }
