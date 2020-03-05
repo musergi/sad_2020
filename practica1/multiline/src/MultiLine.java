@@ -34,6 +34,18 @@ public class MultiLine {
         propertyChangeSupport.firePropertyChange("lines", null, getDisplayString());
     }
 
+    public void home() {
+        cursorColumn = 0;
+
+        propertyChangeSupport.firePropertyChange("lines", null, getDisplayString());
+    }
+
+    public void end() {
+        cursorColumn = lines.get(cursorRow).length();
+
+        propertyChangeSupport.firePropertyChange("lines", null, getDisplayString());
+    }
+
     public void backspace() {
         if (cursorColumn == 0) {
             return;
