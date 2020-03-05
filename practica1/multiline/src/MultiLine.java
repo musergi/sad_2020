@@ -6,6 +6,7 @@ public class MultiLine {
     private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
     private List<StringBuilder> lines;
     private int cursorRow, cursorColumn;
+    private boolean insert;
 
     public MultiLine(ConsoleView consoleView) {
         lines = new ArrayList<>();
@@ -15,6 +16,9 @@ public class MultiLine {
     }
 
     public void addChar(int charCode) {
+        if (insert) {
+            delete();
+        }
         lines.get(cursorRow).insert(cursorColumn, (char) charCode);
         cursorColumn++;
 
@@ -32,6 +36,10 @@ public class MultiLine {
         cursorColumn = Math.min(cursorColumn, lines.get(cursorRow).length());
 
         propertyChangeSupport.firePropertyChange("lines", null, getDisplayString());
+    }
+
+    public void toggleInsert() {
+        insert = !insert;
     }
 
     public void home() {
