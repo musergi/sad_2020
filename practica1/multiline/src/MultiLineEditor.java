@@ -52,7 +52,7 @@ public class MultiLineEditor extends BufferedReader {
                             super.read();
                             break;
                         case '2': // Insert button
-                            
+                            multiLine.toggleInsert();
                             super.read();
                             break;
                         case '4': // End button
