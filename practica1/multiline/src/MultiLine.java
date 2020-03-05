@@ -21,6 +21,39 @@ public class MultiLine {
         propertyChangeSupport.firePropertyChange("lines", null, getDisplayString());
     }
 
+    public void moveCursorColumn(int delta) {
+        cursorColumn = Math.min(Math.max(cursorColumn + delta, 0), lines.get(cursorRow).length());
+
+        propertyChangeSupport.firePropertyChange("lines", null, getDisplayString());
+    }
+
+    public void moveCursorRow(int delta) {
+        cursorRow = Math.min(Math.max(cursorRow + delta, 0), lines.size() - 1);
+        cursorColumn = Math.min(cursorColumn, lines.get(cursorRow).length());
+
+        propertyChangeSupport.firePropertyChange("lines", null, getDisplayString());
+    }
+
+    public void backspace() {
+        if (cursorColumn == 0) {
+            return;
+        }
+        lines.get(cursorRow).deleteCharAt(cursorColumn - 1);
+        cursorColumn--;
+
+        propertyChangeSupport.firePropertyChange("lines", null, getDisplayString());
+    }
+
+    public void delete() {
+        StringBuilder cursorLine = lines.get(cursorRow);
+        if (cursorColumn == cursorLine.length()) {
+            return;
+        }
+        cursorLine.deleteCharAt(cursorColumn);
+
+        propertyChangeSupport.firePropertyChange("lines", null, getDisplayString());
+    } 
+
     public void newLine() {
         lines.add(new StringBuilder());
         cursorRow++;

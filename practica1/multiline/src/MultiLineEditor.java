@@ -6,7 +6,9 @@ public class MultiLineEditor extends BufferedReader {
     private static final int CHAR_CODE_SOH = 1;
     private static final int CHAR_CODE_ENQ = 5;
     private static final int CHAR_CODE_CR = 13;
+    private static final int CHAR_CODE_DELETE = 21;
     private static final int CHAR_CODE_ESC = 27;
+    private static final int CHAR_CODE_BACKSPACE = 127;
 
     private MultiLine multiLine;
 
@@ -20,6 +22,10 @@ public class MultiLineEditor extends BufferedReader {
             int charCode = super.read();
             if (charCode == CHAR_CODE_CR) {
                 multiLine.newLine();
+            } else if (charCode == CHAR_CODE_BACKSPACE) {
+                multiLine.backspace();
+            } else if (charCode == CHAR_CODE_DELETE) {
+                multiLine.delete();
             } else if (charCode == CHAR_CODE_SOH) { // OSX Home equivalent
                 
             } else if (charCode == CHAR_CODE_ENQ) { // OSX End equivalent
@@ -30,12 +36,16 @@ public class MultiLineEditor extends BufferedReader {
                     charCode = super.read();
                     switch ((char) charCode) {
                         case 'A': // Arrow up
+                            multiLine.moveCursorRow(-1);
                             break;
                         case 'B': // Arrow down
+                            multiLine.moveCursorRow(1);
                             break;
                         case 'C': // Arrow right
+                            multiLine.moveCursorColumn(1);
                             break;
                         case 'D': // Arrow left
+                            multiLine.moveCursorColumn(-1);
                             break;
                         default:
                             throw new IOException("Unknown escape sequence");
