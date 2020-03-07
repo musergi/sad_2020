@@ -16,7 +16,9 @@ public class SequenceParser {
         bufferedReader.read();
     }
 
-
+    /**
+     * Leer un archivo de texto que tengan todas las secuencias y lo que devuelven (27-3-4--> -1)
+     */
     private class Node {
         char inChar;
         List<Node> nodes;
