@@ -1,6 +1,9 @@
 public class PrintWindowSize {
     public static void main(String[] args) throws Exception {
-        System.out.print("\u001b[s\u001b[5000;5000H\u001b[6nu001b[u");
-        System.out.println(System.in.read());
+        System.out.print("\u001b[18");
+        int read = 0;
+        while ((read = System.in.read()) != 27) {
+            System.out.println(read);
+        }
     }
 }

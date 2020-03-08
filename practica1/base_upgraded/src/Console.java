@@ -3,7 +3,7 @@ import java.beans.*;
 public class Console implements PropertyChangeListener{
     @Override
     public void propertyChange(PropertyChangeEvent e) {
-        Object propertyName = e.getNewValue();
-        System.out.print(propertyName.toString());
+        Action action = (Action) e.getNewValue();
+        System.out.print(action.actionString());
     }
 }

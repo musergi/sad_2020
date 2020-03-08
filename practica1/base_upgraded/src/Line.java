@@ -7,6 +7,10 @@ public class Line {
     private boolean insert;
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
+    /**
+     * Line default constructor, inits empty StringBuilder and intantiates
+     * a new Console view object.
+     */
     public Line(){
         stringBuilder = new StringBuilder();
         pcs.addPropertyChangeListener(new Console());
@@ -18,35 +22,50 @@ public class Line {
      * @param c char to be inserted to the line
      */
     public void addChar(char c){
+        // Delete right character if in insert mode
         if (insert){
             delete();
         }
+        // Add new character in the cursor position
         stringBuilder.insert(cursor, c);
         cursor++;
-        pcs.firePropertyChange("display", null, action());
+
+        // Signal view
+        String lineEnd = stringBuilder.substring(cursor - 1);
+        pcs.firePropertyChange("charbuffer", null, new AddCharAction(lineEnd));
     }
 
     /**
      * Remove the character to the left of the cursor
      */
     public void backspace(){
+        // Check if the cursor has a character to the left
         if (cursor == 0){
+            // TODO: Play error sound
             return;
         }
-        stringBuilder.deleteCharAt(cursor-1);
+        // Remove charcter to the left of the cursor and move cursor to new position
+        stringBuilder.deleteCharAt(cursor - 1);
         cursor--;
-        pcs.firePropertyChange("display", null, action());
+
+        // Signal view
+        pcs.firePropertyChange("charbuffer", null, new RemoveCharAction(false));
     }
 
     /**
      * Removes the cursors current character
      */
     public void delete(){
+        // Check if cursor is at the end of the string and has no charactert in its position
         if (cursor == stringBuilder.length()){
+            // TODO: Play error sound
             return;
         }
+        // Remove character, no need to update cursor position
         stringBuilder.deleteCharAt(cursor);
-        pcs.firePropertyChange("display", null, action());
+
+        // Signal view
+        pcs.firePropertyChange("charbuffer", null, new RemoveCharAction(true));
     }
 
     /**
@@ -55,24 +74,43 @@ public class Line {
      * right, negative integers are used to represent right movement
      */
     public void moveCursor(int delta){
+        // Save initial cursor state
+        int startingCursor = cursor;
+
+        // Update cursor position bound to 0 and buffer length included
         cursor = Math.min(Math.max(cursor + delta, 0), stringBuilder.length());
-        pcs.firePropertyChange("display", null, action());
+
+        // Signal view
+        int trueCursorDelta = cursor - startingCursor;
+        pcs.firePropertyChange("cursor", null, new MoveCursorAction(trueCursorDelta);
     }
 
     /**
      * Moves the cursor to the start of the line
      */
     public void home(){
+        // Save initial cursor state
+        int startingCursor = cursor;
+
+        // Move cursor to start
         cursor  = 0;
-        pcs.firePropertyChange("display", null, action());
+
+        // Signal view
+        pcs.firePropertyChange("cursor", null, new MoveCusorAction(cursor - startingCursor));
     }
 
     /**
      * Moves the cursor to the end of the line
      */
     public void end(){
+        // Save initial cursor state
+        int startingCursor = cursor;
+
+        // Move cursor to last position in the line
         cursor = stringBuilder.length();
-        pcs.firePropertyChange("display", null, action());
+
+        // Signal view
+        pcs.firePropertyChange("cursor", null, new MoveCursorAction(cursor - startingCursor));
     }
 
     /**
@@ -80,21 +118,6 @@ public class Line {
      */
     public void toggleInsert(){
         insert = !insert;
-    }
-
-    /**
-     * Deprecated
-     * @return
-     */
-    public String action(){
-        StringBuilder commands = new StringBuilder();
-        commands.append('\r');
-        commands.append(stringBuilder.toString());
-        commands.append(" ");
-        commands.append("\033[");
-        commands.append(stringBuilder.length() - cursor + 1);
-        commands.append("D");
-        return commands.toString();
     }
 
     /**
