@@ -36,7 +36,8 @@ public class EditableBufferedReader extends BufferedReader {
      * @return Integer representation of the pressed key
      */
     public int read() throws IOException {
-        throw new RuntimeException("Not implemented");
+        SequenceParser parser = new SequenceParser(this);
+        return parser.next();
     }
 
     /**

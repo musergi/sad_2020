@@ -31,7 +31,7 @@ public class SequenceParser {
         do {
             keyCode = bufferedReader.read();
             currentNode = currentNode.getBranch(keyCode);
-        } while(!currentNode.hasBranch(keyCode));
+        } while(currentNode.hasBranch(keyCode));
         int value = currentNode.getValue();
         currentNode = startingNode;
         return value;

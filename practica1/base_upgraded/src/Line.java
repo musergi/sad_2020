@@ -82,7 +82,7 @@ public class Line {
 
         // Signal view
         int trueCursorDelta = cursor - startingCursor;
-        pcs.firePropertyChange("cursor", null, new MoveCursorAction(trueCursorDelta);
+        pcs.firePropertyChange("cursor", null, new MoveCursorAction(trueCursorDelta));
     }
 
     /**
@@ -96,7 +96,7 @@ public class Line {
         cursor  = 0;
 
         // Signal view
-        pcs.firePropertyChange("cursor", null, new MoveCusorAction(cursor - startingCursor));
+        pcs.firePropertyChange("cursor", null, new MoveCursorAction(cursor - startingCursor));
     }
 
     /**
