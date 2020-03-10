@@ -10,15 +10,25 @@ public class EditableBufferedReader extends BufferedReader {
     /**
      * Sets the console input mode to raw and disables echoing of input
      */
-    private static void setRaw() {
-        throw new RuntimeException("Not implemented");
+    private static void setRaw() throws IOException {
+        try {
+            String[] cmd = {"/bin/sh", "-c", "stty -echo raw </dev/tty"};
+            Runtime.getRuntime().exec(cmd).waitFor();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
      * Clear the console modifications made by setRaw
      */
-    private static void unsetRaw() {
-        throw new RuntimeException("Not implemented");
+    private static void unsetRaw() throws IOException{
+        try {
+            String[] cmd = {"/bin/sh", "-c", "stty echo cooked </dev/tty"};
+            Runtime.getRuntime().exec(cmd).waitFor();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -35,6 +45,7 @@ public class EditableBufferedReader extends BufferedReader {
      * @return The final string given by the user
      */
     public String readLine() throws IOException {
-        throw new RuntimeException("Not implemented");
+        setRaw();
+        unsetRaw();
     }
 }
