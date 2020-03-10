@@ -5,6 +5,7 @@ import java.io.Reader;
 public class EditableBufferedReader extends BufferedReader {
     public EditableBufferedReader(final Reader in) {
         super(in);
+        SequenceParser parser = new SequenceParser(super);
     }
     
     /**
@@ -36,7 +37,6 @@ public class EditableBufferedReader extends BufferedReader {
      * @return Integer representation of the pressed key
      */
     public int read() throws IOException {
-        SequenceParser parser = new SequenceParser(this);
         return parser.next();
     }
 

@@ -33,6 +33,9 @@ public class SequenceParser {
             currentNode = currentNode.getBranch(keyCode);
         } while(currentNode.hasBranch(keyCode));
         int value = currentNode.getValue();
+        if (currentNode == startingNode){
+            value = keyCode;
+        }
         currentNode = startingNode;
         return value;
     }
