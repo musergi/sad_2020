@@ -60,6 +60,12 @@ public class EditableBufferedReader extends BufferedReader {
                 case SequenceParser.K_RIGHT:
                     line.moveCursor(1);
                     break;
+                case SequenceParser.K_HOME:
+                    line.home();
+                    break;
+                case SequenceParser.K_END:
+                    line.end();
+                    break;
                 default:
                     line.addChar((char) inputChar);
             }
