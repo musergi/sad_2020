@@ -13,5 +13,6 @@ public class MoveCursorAction implements Action {
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("MoveCursorAction(").append(delta).append(")");
+        return stringBuilder.toString();
     }
 }
