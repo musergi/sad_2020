@@ -4,10 +4,11 @@ import java.io.Reader;
 
 public class EditableBufferedReader extends BufferedReader {
     private Line line;
+    private SequenceParser parser;
 
     public EditableBufferedReader(final Reader in) {
         super(in);
-        SequenceParser parser = new SequenceParser(super);
+        parser = new SequenceParser(new BufferedReader(in));
         line = new Line();
     }
     
@@ -51,12 +52,35 @@ public class EditableBufferedReader extends BufferedReader {
     public String readLine() throws IOException {
         setRaw();
         int inputChar = 0;
-        while((inputChar = read()) != 13) {
-            line.addChar((char) inputChar);
-            //No se arreglar això
-            System.out.print(new Console().propertyChange(e));
+        while((inputChar = read()) != SequenceParser.K_RETURN) {
+            switch (inputChar) {
+                case SequenceParser.K_LEFT:
+                    line.moveCursor(-1);
+                    break;
+                case SequenceParser.K_RIGHT:
+                    line.moveCursor(1);
+                    break;
+                case SequenceParser.K_HOME:
+                    line.home();
+                    break;
+                case SequenceParser.K_END:
+                    line.end();
+                    break;
+                case SequenceParser.K_INSERT:
+                    line.toggleInsert();
+                    break;
+                case SequenceParser.K_BACKSPACE:
+                    line.backspace();
+                    break;
+                case SequenceParser.K_DELETE:
+                    line.delete();
+                    break;
+                default:
+                    line.addChar((char) inputChar);
+            }
+
         }
         unsetRaw();
-        return null;
+        return line.toString();
     }
 }

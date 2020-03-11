@@ -31,8 +31,8 @@ public class Line {
         cursor++;
 
         // Signal view
-        String lineEnd = stringBuilder.substring(cursor - 1);
-        pcs.firePropertyChange("charbuffer", null, new AddCharAction(lineEnd));
+        String lineEnd = stringBuilder.substring(cursor);
+        pcs.firePropertyChange("charbuffer", null, new AddCharAction(c, lineEnd));
     }
 
     /**
@@ -49,7 +49,8 @@ public class Line {
         cursor--;
 
         // Signal view
-        pcs.firePropertyChange("charbuffer", null, new RemoveCharAction(false));
+        String lineEnd = stringBuilder.substring(cursor);
+        pcs.firePropertyChange("charbuffer", null, new RemoveCharAction(false, lineEnd));
     }
 
     /**
@@ -65,7 +66,8 @@ public class Line {
         stringBuilder.deleteCharAt(cursor);
 
         // Signal view
-        pcs.firePropertyChange("charbuffer", null, new RemoveCharAction(true));
+        String lineEnd = stringBuilder.substring(cursor);
+        pcs.firePropertyChange("charbuffer", null, new RemoveCharAction(true, lineEnd));
     }
 
     /**
@@ -82,7 +84,9 @@ public class Line {
 
         // Signal view
         int trueCursorDelta = cursor - startingCursor;
-        pcs.firePropertyChange("cursor", null, new MoveCursorAction(trueCursorDelta));
+        if (trueCursorDelta != 0) {
+            pcs.firePropertyChange("cursor", null, new MoveCursorAction(trueCursorDelta));
+        }
     }
 
     /**
@@ -96,7 +100,10 @@ public class Line {
         cursor  = 0;
 
         // Signal view
-        pcs.firePropertyChange("cursor", null, new MoveCursorAction(cursor - startingCursor));
+        int trueCursorDelta = cursor - startingCursor;
+        if (trueCursorDelta != 0) {
+            pcs.firePropertyChange("cursor", null, new MoveCursorAction(trueCursorDelta));
+        }
     }
 
     /**
@@ -110,7 +117,10 @@ public class Line {
         cursor = stringBuilder.length();
 
         // Signal view
-        pcs.firePropertyChange("cursor", null, new MoveCursorAction(cursor - startingCursor));
+        int trueCursorDelta = cursor - startingCursor;
+        if (trueCursorDelta != 0) {
+            pcs.firePropertyChange("cursor", null, new MoveCursorAction(trueCursorDelta));
+        }
     }
 
     /**

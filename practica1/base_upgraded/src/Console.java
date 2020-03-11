@@ -1,4 +1,7 @@
 import java.beans.*;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Console implements PropertyChangeListener{
     @Override
