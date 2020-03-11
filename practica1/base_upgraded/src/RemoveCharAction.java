@@ -22,4 +22,10 @@ public class RemoveCharAction implements Action {
         stringBuilder.append("\033[").append(1 + lineEnd.length()).append("D");
         return stringBuilder.toString();
     }
+
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("RemoveCharAction(").append(isRight).append(", ").append(lineEnd).append(")");
+        return stringBuilder.toString();
+    }
 }
