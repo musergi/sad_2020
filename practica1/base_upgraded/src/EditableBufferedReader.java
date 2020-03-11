@@ -61,11 +61,19 @@ public class EditableBufferedReader extends BufferedReader {
                     line.moveCursor(1);
                     break;
                 case SequenceParser.K_HOME:
-                    System.out.println("Home pressed");
                     line.home();
                     break;
                 case SequenceParser.K_END:
                     line.end();
+                    break;
+                case SequenceParser.K_INSERT:
+                    line.toggleInsert();
+                    break;
+                case SequenceParser.K_BACKSPACE:
+                    line.backspace();
+                    break;
+                case SequenceParser.K_DELETE:
+                    line.delete();
                     break;
                 default:
                     line.addChar((char) inputChar);

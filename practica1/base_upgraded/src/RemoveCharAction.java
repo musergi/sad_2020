@@ -1,12 +1,14 @@
 public class RemoveCharAction implements Action {
-    public boolean isRight;
+    private boolean isRight;
+    private String lineEnd;
     
-    public RemoveCharAction(boolean isRight) {
+    public RemoveCharAction(boolean isRight, String lineEnd) {
         this.isRight = isRight;
+        this.lineEnd = lineEnd;
     }
 
     @Override
     public String actionString() {
-        return (isRight ? "\033[1C" : "") + "\b";
+        return (isRight ? "\033[1C" : "") + "\b" + lineEnd + " " + "\033[" + (lineEnd.length() + 1) + "D";
     }
 }

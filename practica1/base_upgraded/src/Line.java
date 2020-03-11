@@ -31,7 +31,7 @@ public class Line {
         cursor++;
 
         // Signal view
-        String lineEnd = stringBuilder.substring(cursor - 1, stringBuilder.length());
+        String lineEnd = stringBuilder.substring(cursor - 1);
         pcs.firePropertyChange("charbuffer", null, new AddCharAction(lineEnd));
     }
 
@@ -49,7 +49,8 @@ public class Line {
         cursor--;
 
         // Signal view
-        pcs.firePropertyChange("charbuffer", null, new RemoveCharAction(false));
+        String lineEnd = stringBuilder.substring(cursor);
+        pcs.firePropertyChange("charbuffer", null, new RemoveCharAction(false, lineEnd));
     }
 
     /**
@@ -65,7 +66,8 @@ public class Line {
         stringBuilder.deleteCharAt(cursor);
 
         // Signal view
-        pcs.firePropertyChange("charbuffer", null, new RemoveCharAction(true));
+        String lineEnd = stringBuilder.substring(cursor);
+        pcs.firePropertyChange("charbuffer", null, new RemoveCharAction(true, lineEnd));
     }
 
     /**
