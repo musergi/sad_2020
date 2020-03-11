@@ -5,6 +5,9 @@ public class RemoveCharAction implements Action {
     public RemoveCharAction(boolean isRight, String lineEnd) {
         this.isRight = isRight;
         this.lineEnd = lineEnd;
+        System.out.println();
+        System.out.println(lineEnd);
+        System.out.println();
     }
 
     @Override

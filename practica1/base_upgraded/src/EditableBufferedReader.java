@@ -52,7 +52,7 @@ public class EditableBufferedReader extends BufferedReader {
     public String readLine() throws IOException {
         setRaw();
         int inputChar = 0;
-        while((inputChar = read()) != 13) {
+        while((inputChar = read()) != SequenceParser.K_RETURN) {
             switch (inputChar) {
                 case SequenceParser.K_LEFT:
                     line.moveCursor(-1);
