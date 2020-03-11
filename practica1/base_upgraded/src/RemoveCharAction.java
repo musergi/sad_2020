@@ -5,9 +5,6 @@ public class RemoveCharAction implements Action {
     public RemoveCharAction(boolean isRight, String lineEnd) {
         this.isRight = isRight;
         this.lineEnd = lineEnd;
-        System.out.println();
-        System.out.println(toString());
-        System.out.println();
     }
 
     @Override
@@ -18,7 +15,7 @@ public class RemoveCharAction implements Action {
         if (!isRight) {
             stringBuilder.append("\033[1D");
         }
-        stringBuilder.append("\003[s");
+        stringBuilder.append("\033[s");
         stringBuilder.append(lineEnd).append(" ");
         stringBuilder.append("\033[u");
         return stringBuilder.toString();
