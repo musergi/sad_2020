@@ -100,7 +100,10 @@ public class Line {
         cursor  = 0;
 
         // Signal view
-        pcs.firePropertyChange("cursor", null, new MoveCursorAction(cursor - startingCursor));
+        int trueCursorDelta = cursor - startingCursor;
+        if (trueCursorDelta != 0) {
+            pcs.firePropertyChange("cursor", null, new MoveCursorAction(trueCursorDelta));
+        }
     }
 
     /**
@@ -114,7 +117,10 @@ public class Line {
         cursor = stringBuilder.length();
 
         // Signal view
-        pcs.firePropertyChange("cursor", null, new MoveCursorAction(cursor - startingCursor));
+        int trueCursorDelta = cursor - startingCursor;
+        if (trueCursorDelta != 0) {
+            pcs.firePropertyChange("cursor", null, new MoveCursorAction(trueCursorDelta));
+        }
     }
 
     /**
