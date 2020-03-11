@@ -6,7 +6,7 @@ public class RemoveCharAction implements Action {
         this.isRight = isRight;
         this.lineEnd = lineEnd;
         System.out.println();
-        System.out.println(lineEnd);
+        System.out.println(toString());
         System.out.println();
     }
 
