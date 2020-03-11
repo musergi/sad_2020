@@ -3,8 +3,8 @@ import java.io.IOException;
 import java.util.*;
 
 public class SequenceParser {
-    public static final int K_BACKSPACE = 8;
     public static final int K_RETURN = 13;
+    public static final int K_BACKSPACE = 127;
 
     public static final int K_LEFT = -2;
     public static final int K_RIGHT = -3;
