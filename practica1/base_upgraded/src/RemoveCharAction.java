@@ -9,6 +9,14 @@ public class RemoveCharAction implements Action {
 
     @Override
     public String actionString() {
-        return (isRight ? "" : "\033[1D") + lineEnd + " " + "\033[" + (lineEnd.length() + 1) + "D";
+        StringBuilder stringBuilder = new StringBuilder();
+        
+        // Move left if not right remove
+        if (!isRight) {
+            stringBuilder.append("\033[1D");
+        }
+        stringBuilder.append(lineEnd).append(" ");
+        stringBuilder.append("\033[").append(1 + lineEnd.length()).append("D");
+        return stringBuilder.toString();
     }
 }
