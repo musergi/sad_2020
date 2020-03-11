@@ -18,8 +18,9 @@ public class RemoveCharAction implements Action {
         if (!isRight) {
             stringBuilder.append("\033[1D");
         }
+        stringBuilder.append("\003[s");
         stringBuilder.append(lineEnd).append(" ");
-        stringBuilder.append("\033[").append(1 + lineEnd.length()).append("D");
+        stringBuilder.append("\033[u");
         return stringBuilder.toString();
     }
 
