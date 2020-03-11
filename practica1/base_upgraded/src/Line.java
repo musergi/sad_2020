@@ -31,8 +31,8 @@ public class Line {
         cursor++;
 
         // Signal view
-        String lineEnd = stringBuilder.substring(cursor - 1);
-        pcs.firePropertyChange("charbuffer", null, new AddCharAction(lineEnd));
+        String lineEnd = stringBuilder.substring(cursor);
+        pcs.firePropertyChange("charbuffer", null, new AddCharAction(c, lineEnd));
     }
 
     /**
