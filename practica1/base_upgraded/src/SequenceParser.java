@@ -39,10 +39,10 @@ public class SequenceParser {
         // Create tree
         startingNode = new Node();
         // xterm sequences
-        addSequence("\u001b[A", K_UP);
-        addSequence("\u001b[B", K_DOWN);
-        addSequence("\u001b[C", K_LEFT);
-        addSequence("\u001b[D", K_RIGHT);
+        addSequence("\u001b[A", K_DOWN);
+        addSequence("\u001b[B", K_UP);
+        addSequence("\u001b[C", K_RIGHT);
+        addSequence("\u001b[D", K_LEFT);
         addSequence("\u001b[F", K_HOME);
         addSequence("\u001b[H", K_END);
         addSequence("\u001b[1P", K_F1);

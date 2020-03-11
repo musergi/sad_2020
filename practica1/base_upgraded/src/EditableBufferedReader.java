@@ -4,10 +4,11 @@ import java.io.Reader;
 
 public class EditableBufferedReader extends BufferedReader {
     private Line line;
+    private SequenceParser parser;
 
     public EditableBufferedReader(final Reader in) {
         super(in);
-        SequenceParser parser = new SequenceParser(super);
+        parser = new SequenceParser(new BufferedReader(in));
         line = new Line();
     }
     
@@ -52,11 +53,19 @@ public class EditableBufferedReader extends BufferedReader {
         setRaw();
         int inputChar = 0;
         while((inputChar = read()) != 13) {
-            line.addChar((char) inputChar);
-            //No se arreglar això
-            System.out.print(new Console().propertyChange(e));
+            switch (inputChar) {
+                case SequenceParser.K_LEFT:
+                    line.moveCursor(-1);
+                    break;
+                case SequenceParser.K_RIGHT:
+                    line.moveCursor(1);
+                    break;
+                default:
+                    line.addChar((char) inputChar);
+            }
+
         }
         unsetRaw();
-        return null;
+        return line.toString();
     }
 }

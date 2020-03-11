@@ -31,7 +31,7 @@ public class Line {
         cursor++;
 
         // Signal view
-        String lineEnd = stringBuilder.substring(cursor - 1);
+        String lineEnd = stringBuilder.substring(cursor - 1, stringBuilder.length());
         pcs.firePropertyChange("charbuffer", null, new AddCharAction(lineEnd));
     }
 
@@ -82,7 +82,9 @@ public class Line {
 
         // Signal view
         int trueCursorDelta = cursor - startingCursor;
-        pcs.firePropertyChange("cursor", null, new MoveCursorAction(trueCursorDelta));
+        if (trueCursorDelta != 0) {
+            pcs.firePropertyChange("cursor", null, new MoveCursorAction(trueCursorDelta));
+        }
     }
 
     /**
