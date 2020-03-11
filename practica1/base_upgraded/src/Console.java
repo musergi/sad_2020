@@ -9,7 +9,7 @@ public class Console implements PropertyChangeListener{
     @Override
     public void propertyChange(PropertyChangeEvent e) {
         Action action = (Action) e.getNewValue();
-        LOGGER.log(Level.ALL, action.toString());
+        LOGGER.log(Level.SEVERE, action.toString());
         System.out.print(action.actionString());
     }
 }
