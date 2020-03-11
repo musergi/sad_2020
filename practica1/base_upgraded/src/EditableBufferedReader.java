@@ -3,8 +3,12 @@ import java.io.IOException;
 import java.io.Reader;
 
 public class EditableBufferedReader extends BufferedReader {
+    private Line line;
+
     public EditableBufferedReader(final Reader in) {
         super(in);
+        SequenceParser parser = new SequenceParser(super);
+        line = new Line();
     }
     
     /**
@@ -36,7 +40,7 @@ public class EditableBufferedReader extends BufferedReader {
      * @return Integer representation of the pressed key
      */
     public int read() throws IOException {
-        throw new RuntimeException("Not implemented");
+        return parser.next();
     }
 
     /**
@@ -46,6 +50,13 @@ public class EditableBufferedReader extends BufferedReader {
      */
     public String readLine() throws IOException {
         setRaw();
+        int inputChar = 0;
+        while((inputChar = read()) != 13) {
+            line.addChar((char) inputChar);
+            //No se arreglar això
+            System.out.print(new Console().propertyChange(e));
+        }
         unsetRaw();
+        return null;
     }
 }
