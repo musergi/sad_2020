@@ -61,6 +61,7 @@ public class EditableBufferedReader extends BufferedReader {
                     line.moveCursor(1);
                     break;
                 case SequenceParser.K_HOME:
+                    System.out.println("Home pressed");
                     line.home();
                     break;
                 case SequenceParser.K_END:
