@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class Main {
     private static void loadLibrary() {
@@ -8,7 +9,7 @@ public class Main {
     }
     public static void main(String[] args) throws IOException {
         loadLibrary();
-        ConsoleUtils.set_raw_mode();
-        System.out.println(System.in.read());
+        System.out.println();
+        System.out.println(new MultilineReader(new InputStreamReader(System.in)).readLines());
     }
 }
