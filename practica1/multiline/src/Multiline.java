@@ -21,7 +21,7 @@ public class Multiline {
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Multiline((");
-        stringBuilder.append(cursorRow).append(", ").append(cursorColumn)
+        stringBuilder.append(cursorRow).append(", ").append(cursorColumn);
         stringBuilder.append("), ");
         stringBuilder.append(lines.get(0));
         stringBuilder.append(")");
