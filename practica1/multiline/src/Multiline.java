@@ -64,11 +64,17 @@ public class Multiline {
 
     public void delete(boolean right) {
         StringBuilder currentLine =  lines.get(cursorRow);
-        int delete_position = right ? cursorColumn : cursorColumn - 1;
-        if (delete_position >= 0 && delete_position < currentLine.length()) {
-            currentLine.deleteCharAt(delete_position);
+        int deletePosition = right ? cursorColumn : cursorColumn - 1;
+        if (deletePosition >= 0 && deletePosition < currentLine.length()) {
+            currentLine.deleteCharAt(deletePosition);
             moveCursorH(right ? 0 : -1);
-        }  
+        } else if (deletePosition == -1 && cursorRow > 0) {
+            StringBuilder previousLine = lines.get(cursorRow - 1);
+            cursorColumn = previousLine.length();
+            previousLine.append(currentLine);
+            lines.remove(cursorRow);
+            cursorRow--;
+        }
     }
 
     public void lineJump() {
