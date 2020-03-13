@@ -63,8 +63,12 @@ public class Multiline {
     }
 
     public void delete(boolean right) {
-        lines.get(cursorRow).deleteCharAt(right ? cursorColumn : cursorColumn - 1);
-        moveCursorH(right ? 0 : -1);
+        StringBuilder currentLine =  lines.get(cursorRow);
+        int delete_position = right ? cursorColumn : cursorColumn - 1;
+        if (delete_position >= 0 && delete_position < currentLine.length()) {
+            currentLine.deleteCharAt(delete_position);
+            moveCursorH(right ? 0 : -1);
+        }  
     }
 
     public void lineJump() {
