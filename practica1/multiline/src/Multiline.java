@@ -18,6 +18,12 @@ public class Multiline {
             case SequenceParser.K_RIGHT:
                 moveCursorH(1);
                 break;
+            case SequenceParser.K_UP:
+                moveCursorV(-1);
+                break;
+            case SequenceParser.K_DOWN:
+                moveCursorV(1);
+                break;
             case SequenceParser.K_RETURN:
             case SequenceParser.K_LINE_FEED:
                 lineJump();
@@ -36,6 +42,10 @@ public class Multiline {
         cursorColumn = Math.min(Math.max(0, cursorColumn + delta), lines.get(cursorRow).length());
     }
 
+    public void moveCursorV(int delta) {
+        cursorRow = Math.min(Math.max(0, cursorRow + delta), lines.size() - 1);
+    }
+
     public void lineJump() {
         // Get current line
         StringBuilder currentLine = lines.get(cursorRow);
@@ -46,6 +56,8 @@ public class Multiline {
             newLine.append(currentLine.substring(cursorColumn));
             currentLine.delete(cursorColumn, currentLine.length() - 1);
         }
+
+        // Add new line and update cursor position
         lines.add(cursorRow + 1, newLine);
         cursorRow++;
         cursorColumn = 0;
