@@ -24,6 +24,12 @@ public class Multiline {
             case SequenceParser.K_DOWN:
                 moveCursorV(1);
                 break;
+            case SequenceParser.K_HOME:
+                moveCursorH(-cursorColumn);
+                break;
+            case SequenceParser.K_END:
+                moveCursorH(lines.get(cursorRow).length() - cursorColumn);
+                break;
             case SequenceParser.K_RETURN:
             case SequenceParser.K_LINE_FEED:
                 lineJump();
