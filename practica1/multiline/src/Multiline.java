@@ -42,6 +42,17 @@ public class Multiline {
         cursorColumn = 0;
     }
 
+    public String getFinalString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (StringBuilder line: lines) {
+            if (line != lines.get(0)) {
+                stringBuilder.append('\n');
+            }
+            stringBuilder.append(line.toString());
+        }
+        return stringBuilder.toString();
+    }
+
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Multiline((");

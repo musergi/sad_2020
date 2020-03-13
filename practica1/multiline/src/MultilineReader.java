@@ -23,6 +23,6 @@ public class MultilineReader extends BufferedReader {
             multiline.process(keyCode);
             System.out.println(multiline);
         }
-        return null;
+        return multiline.getFinalString();
     }
 }
