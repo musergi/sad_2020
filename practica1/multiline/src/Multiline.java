@@ -83,6 +83,9 @@ public class Multiline {
             previousLine.append(currentLine);
             lines.remove(cursorRow);
             cursorRow--;
+        } else if (deletePosition == currentLine.length() && cursorRow < lines.size() - 1) {
+            currentLine.append(lines.get(cursorRow + 1));
+            lines.remove(cursorRow + 1);
         }
     }
 
