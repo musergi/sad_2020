@@ -94,7 +94,7 @@ public class Multiline {
         // Take text after cursor if there is
         if (cursorColumn != currentLine.length()) {
             newLine.append(currentLine.substring(cursorColumn));
-            currentLine.delete(cursorColumn, currentLine.length() - 1);
+            currentLine.delete(cursorColumn, currentLine.length());
         }
 
         // Add new line and update cursor position
