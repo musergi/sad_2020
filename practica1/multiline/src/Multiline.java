@@ -4,6 +4,7 @@ import java.util.List;
 public class Multiline {
     private int cursorRow, cursorColumn;
     private List<StringBuilder> lines;
+    private boolean instert;
 
     public Multiline() {
         lines = new ArrayList<>();
@@ -36,6 +37,8 @@ public class Multiline {
             case SequenceParser.K_DELETE:
                 delete(true);
                 break;
+            case SequenceParser.K_INSERT:
+                instert = !instert;
             case SequenceParser.K_RETURN:
             case SequenceParser.K_LINE_FEED:
                 lineJump();
@@ -46,7 +49,11 @@ public class Multiline {
     }
 
     public void addChar(char c) {
-        lines.get(cursorRow).insert(cursorColumn, c);
+        StringBuilder currentLine = lines.get(cursorRow);
+        if (instert && cursorColumn < currentLine.length()) {
+            currentLine.setCharAt(cursorColumn, c);
+        }
+        currentLine.insert(cursorColumn, c);
         cursorColumn++;
     }
 
