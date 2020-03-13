@@ -11,11 +11,34 @@ public class Multiline {
     }
 
     public void process(int keyCode) {
-        addChar((char) keyCode);
+        switch (keyCode) {
+            case SequenceParser.K_LEFT:
+                moveCursorH(-1);
+                break;
+            case SequenceParser.K_RIGHT:
+                moveCursorH(1);
+                break;
+            case SequenceParser.K_RETURN:
+            case SequenceParser.K_LINE_FEED:
+                lineJump();
+                break;
+            default:
+                addChar((char) keyCode);
+        }
     }
 
     public void addChar(char c) {
-        lines.get(cursorRow).append(c);
+        lines.get(cursorRow).insert(cursorColumn, c);
+        cursorColumn++;
+    }
+
+    public void moveCursorH(int delta) {
+        cursorColumn = Math.min(Math.max(0, cursorColumn + delta), lines.get(cursorRow).length());
+    }
+
+    public void lineJump() {
+        lines.add(cursorRow + 1, new StringBuilder());
+        cursorRow++;
     }
 
     public String toString() {

@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.util.*;
 
 public class SequenceParser {
+    public static final int K_LINE_FEED = 10;
     public static final int K_RETURN = 13;
     public static final int K_BACKSPACE = 127;
 
