@@ -64,7 +64,7 @@ public class Multiline {
 
     public void delete(boolean right) {
         lines.get(cursorRow).deleteCharAt(right ? cursorColumn : cursorColumn - 1);
-        cursorColumn -= right ? 0 : 1;
+        moveCursorH(right ? 0 : 1);
     }
 
     public void lineJump() {
