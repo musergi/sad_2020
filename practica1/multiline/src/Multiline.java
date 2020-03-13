@@ -37,7 +37,16 @@ public class Multiline {
     }
 
     public void lineJump() {
-        lines.add(cursorRow + 1, new StringBuilder());
+        // Get current line
+        StringBuilder currentLine = lines.get(cursorRow);
+        StringBuilder newLine = new StringBuilder();
+
+        // Take text after cursor if there is
+        if (cursorColumn != currentLine.length()) {
+            newLine.append(currentLine.substring(cursorColumn));
+            currentLine.delete(cursorColumn, currentLine.length() - 1);
+        }
+        lines.add(cursorRow + 1, newLine);
         cursorRow++;
         cursorColumn = 0;
     }
