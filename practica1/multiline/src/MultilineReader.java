@@ -21,7 +21,6 @@ public class MultilineReader extends BufferedReader {
         ConsoleUtils.set_raw_mode();
         while ((keyCode = read()) != SequenceParser.K_CTRL_D) {
             multiline.process(keyCode);
-            System.out.println(multiline);
         }
         return multiline.getFinalString();
     }

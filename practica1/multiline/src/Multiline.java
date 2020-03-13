@@ -1,14 +1,18 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.beans.PropertyChangeSupport;
 
 public class Multiline {
     private int cursorRow, cursorColumn;
     private List<StringBuilder> lines;
-    private boolean instert;
+    private boolean insert;
+    private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
     public Multiline() {
         lines = new ArrayList<>();
         lines.add(new StringBuilder());
+        pcs.addPropertyChangeListener("cursor", new CursorView());
+        pcs.addPropertyChangeListener("text", new TextView());
     }
 
     public void process(int keyCode) {
@@ -38,7 +42,8 @@ public class Multiline {
                 delete(true);
                 break;
             case SequenceParser.K_INSERT:
-                instert = !instert;
+                insert = !insert;
+                break;
             case SequenceParser.K_RETURN:
             case SequenceParser.K_LINE_FEED:
                 lineJump();
@@ -50,11 +55,14 @@ public class Multiline {
 
     public void addChar(char c) {
         StringBuilder currentLine = lines.get(cursorRow);
-        if (instert && cursorColumn < currentLine.length()) {
+        if (insert && cursorColumn < currentLine.length()) {
             currentLine.setCharAt(cursorColumn, c);
+        } else {
+            currentLine.insert(cursorColumn, c);
+            pcs.firePropertyChange("text", null, currentLine.substring(cursorColumn));
         }
-        currentLine.insert(cursorColumn, c);
         cursorColumn++;
+        pcs.firePropertyChange("cursor", null, new CursorView.CursorDelta(0, 1));
     }
 
     public void moveCursorH(int delta) {
@@ -128,7 +136,9 @@ public class Multiline {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Multiline((");
         stringBuilder.append(cursorRow).append(", ").append(cursorColumn);
-        stringBuilder.append("), (");
+        stringBuilder.append("), ");
+        stringBuilder.append(insert);
+        stringBuilder.append(", (");
         stringBuilder.append(lines.get(0));
         for (int i = 1; i < lines.size(); i++) {
             stringBuilder.append(", ").append(lines.get(i));

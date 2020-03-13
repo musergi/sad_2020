@@ -11,6 +11,6 @@ public class Main {
     public static void main(String[] args) throws IOException {
         loadLibrary();
         System.out.println();
-        System.out.println(new MultilineReader(new InputStreamReader(System.in)).readLines());
+        System.out.println("\n" + new MultilineReader(new InputStreamReader(System.in)).readLines());
     }
 }
