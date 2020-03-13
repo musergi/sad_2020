@@ -39,15 +39,19 @@ public class Multiline {
     public void lineJump() {
         lines.add(cursorRow + 1, new StringBuilder());
         cursorRow++;
+        cursorColumn = 0;
     }
 
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Multiline((");
         stringBuilder.append(cursorRow).append(", ").append(cursorColumn);
-        stringBuilder.append("), ");
+        stringBuilder.append("), (");
         stringBuilder.append(lines.get(0));
-        stringBuilder.append(")");
+        for (int i = 1; i < lines.size(); i++) {
+            stringBuilder.append(", ").append(lines.get(i));
+        }
+        stringBuilder.append("))");
         return stringBuilder.toString();
     }
 }
