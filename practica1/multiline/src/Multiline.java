@@ -51,7 +51,16 @@ public class Multiline {
     }
 
     public void moveCursorH(int delta) {
-        cursorColumn = Math.min(Math.max(0, cursorColumn + delta), lines.get(cursorRow).length());
+        int newCursorColumn = cursorColumn + delta;
+        if (newCursorColumn == -1 && cursorRow > 0) {
+            cursorRow--;
+            cursorColumn = lines.get(cursorRow).length();
+        } else if (newCursorColumn == lines.get(cursorRow).length() + 1 && cursorRow < lines.size() - 1) {
+            cursorRow++;
+            cursorColumn = 0;
+        } else if (newCursorColumn >= 0 && newCursorColumn <= lines.get(cursorRow).length()) {
+            cursorColumn = newCursorColumn;
+        }
     }
 
     public void moveCursorV(int delta) {
