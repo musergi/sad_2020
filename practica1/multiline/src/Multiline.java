@@ -44,6 +44,10 @@ public class Multiline {
 
     public void moveCursorV(int delta) {
         cursorRow = Math.min(Math.max(0, cursorRow + delta), lines.size() - 1);
+        int lineLength = lines.get(cursorRow).length();
+        if (cursorColumn > lineLength) {
+            cursorColumn = lineLength;
+        }
     }
 
     public void lineJump() {
