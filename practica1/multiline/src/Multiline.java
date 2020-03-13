@@ -30,6 +30,12 @@ public class Multiline {
             case SequenceParser.K_END:
                 moveCursorH(lines.get(cursorRow).length() - cursorColumn);
                 break;
+            case SequenceParser.K_BACKSPACE:
+                delete(false);
+                break;
+            case SequenceParser.K_DELETE:
+                delete(true);
+                break;
             case SequenceParser.K_RETURN:
             case SequenceParser.K_LINE_FEED:
                 lineJump();
@@ -54,6 +60,11 @@ public class Multiline {
         if (cursorColumn > lineLength) {
             cursorColumn = lineLength;
         }
+    }
+
+    public void delete(boolean right) {
+        lines.get(cursorRow).deleteCharAt(right ? cursorColumn + 1 : cursorColumn);
+        cursorColumn -= right ? 0 : 1;
     }
 
     public void lineJump() {
