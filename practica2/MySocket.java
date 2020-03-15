@@ -1,41 +1,40 @@
 import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
 public class MySocket {
     /**
-     * Client
-     * funcionalment equivalent a la classe de Java Socket  
-     * però que encapsuli excepcions i els corresponents streams de text BufferedReader i PrintWriter. 
-     * Aquesta classe haurà de disposar de mètodes de lectura/escriptura dels tipus bàsics.
+     * Client funcionalment equivalent a la classe de Java Socket però que encapsuli
+     * excepcions i els corresponents streams de text BufferedReader i PrintWriter.
+     * Aquesta classe haurà de disposar de mètodes de lectura/escriptura dels tipus
+     * bàsics.
      */
-    Socket socket;
-    BufferedReader buff; 
-    PrintWriter writer; 
+    private final Socket socket;
+    private final BufferedReader in;
+    private final PrintWriter out;
 
-    public MySocket(SocketAddress address, PrintWriter writer){
-        //Create connection with the server
-        socket = new Socket();
-        socket.connect(address);
+    public MySocket(final String hostName, final int port) throws IOException {
+        // Create connection with the server
+        socket = new Socket(hostName, port);
 
-        this.buff = new BufferedReader(socket.getInputStream());
-        this.writer = new PrintWriter(socket.getOutputStream());
+        this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        this.out = new PrintWriter(socket.getOutputStream(), true);
 
     }
+
     /**
      * Send a message to the client once the connection is made
+     * 
      * @param message The message that the client has to send
      */
     public void sendMessage(final String message) {
-        writer.write(message); //Lo que no se como enviarlo al otro puerto 
-        writer.flush();
-        writer.close();
+        out.println(message);
     }
 
-    public String receiveMessage() {
-        message = buff.readLine();
-        buff.close();
-        return message;
+    public String receiveMessage() throws IOException {
+        return in.readLine();
     }
 
 }
