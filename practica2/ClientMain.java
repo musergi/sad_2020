@@ -24,7 +24,6 @@ public class ClientMain {
             while (true) {
                 try {
                     System.out.println(socket.receiveMessage());
-
                 } catch (final IOException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -46,7 +45,6 @@ public class ClientMain {
             while (true) {
                 try {
                     socket.sendMessage(in.readLine());
-
                 } catch (final IOException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
