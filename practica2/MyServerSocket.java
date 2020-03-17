@@ -60,6 +60,9 @@ public class MyServerSocket {
                 }else {
                     //Start connection
                     Socket remoteSocket = pendingConnections.remove(remoteNick + " " +connectionNick);
+                    new Forwarder(clientSocket, remoteSocket).start();
+                    new Forwarder(remoteSocket, clientSocket).start();
+
                 }
 
 
@@ -83,6 +86,7 @@ public class MyServerSocket {
                     in = new BufferedReader(new InputStreamReader(entry.getInputStream()));
                     out = new PrintWriter(exit.getOutputStream(), true);
 
+                    new PrintWriter(entry.getOutputStream(), true).println("Oki");
                     String inputLine;
                     while ((inputLine = in.readLine()) != null) {
                         out.println(inputLine);
