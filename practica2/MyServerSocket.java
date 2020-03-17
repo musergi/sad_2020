@@ -56,8 +56,10 @@ public class MyServerSocket {
                 if (!pendingConnections.containsKey(remoteNick + " " + connectionNick)){
                     //Await in queue
                     pendingConnections.put(connectionNick + " " + remoteNick, clientSocket);
+
                 }else {
                     //Start connection
+                    Socket remoteSocket = pendingConnections.remove(remoteNick + " " +connectionNick);
                 }
 
 
@@ -72,6 +74,16 @@ public class MyServerSocket {
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
+            }
+        }
+        private class Forwarder extends Thread {
+            private Socket entry; 
+            private Socket exit;
+
+            public Forwarder(Socket entry, Socket exit) {
+                this.entry = entry;
+                this.exit = exit;
+
             }
         }
     }
