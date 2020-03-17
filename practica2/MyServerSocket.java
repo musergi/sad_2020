@@ -15,6 +15,9 @@ public class MyServerSocket {
      * lectura/escriptura dels tipus bàsics.
      */
     private ServerSocket serverSocket;
+    /**
+     * String is connectionNick remoteNick
+     */
     private Map <String, Socket> pendingConnections = new ConcurrentHashMap<>();
 
     /**
@@ -47,6 +50,17 @@ public class MyServerSocket {
 
         public void run(){
             try {
+                String connectionNick = in.readLine();
+                String remoteNick = in.readLine();
+
+                if (!pendingConnections.containsKey(remoteNick + " " + connectionNick)){
+                    //Await in queue
+                    pendingConnections.put(connectionNick + " " + remoteNick, clientSocket);
+                }else {
+                    //Start connection
+                }
+
+
                 String inputLine;
                 while ((inputLine = in.readLine()) != null) {
                     out.println(inputLine);
