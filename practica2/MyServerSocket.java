@@ -63,14 +63,7 @@ public class MyServerSocket {
                 }
 
 
-                String inputLine;
-                while ((inputLine = in.readLine()) != null) {
-                    out.println(inputLine);
-                }
-                in.close();
-                out.close();
-                clientSocket.close();
-
+                
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -83,6 +76,25 @@ public class MyServerSocket {
             public Forwarder(Socket entry, Socket exit) {
                 this.entry = entry;
                 this.exit = exit;
+            }
+
+            public void run(){
+                try {
+                    in = new BufferedReader(new InputStreamReader(entry.getInputStream()));
+                    out = new PrintWriter(exit.getOutputStream(), true);
+
+                    String inputLine;
+                    while ((inputLine = in.readLine()) != null) {
+                        out.println(inputLine);
+                    }
+                    in.close();
+                    out.close();
+                    clientSocket.close();
+                    
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
 
             }
         }
