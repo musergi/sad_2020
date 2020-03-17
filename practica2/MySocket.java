@@ -15,13 +15,15 @@ public class MySocket {
     private final BufferedReader in;
     private final PrintWriter out;
 
-    public MySocket(final String hostName, final int port) throws IOException {
+    public static final String HOST_NAME = "localhost";
+    public static final int PORT = 6969;
+
+    public MySocket(String myNick, String remoteNick) throws IOException {
         // Create connection with the server
-        socket = new Socket(hostName, port);
+        socket = new Socket(HOST_NAME, PORT);
 
         this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         this.out = new PrintWriter(socket.getOutputStream(), true);
-
     }
 
     /**
