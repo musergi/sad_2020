@@ -15,7 +15,7 @@ public class MyServerSocket {
      * lectura/escriptura dels tipus bàsics.
      */
     private ServerSocket serverSocket;
-    private Map <String, Socket> parells = new HashMap<>();
+    private Map <String, Socket> pendingConnections = new HashMap<>();
 
     /**
      * Acceptar clients i quan rep un client el passa a un altre socket
