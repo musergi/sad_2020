@@ -53,6 +53,8 @@ public class MyServerSocket {
                 String connectionNick = in.readLine();
                 String remoteNick = in.readLine();
 
+                System.out.println("Connection: " + connectionNick + " " + remoteNick);
+
                 if (!pendingConnections.containsKey(remoteNick + " " + connectionNick)){
                     //Await in queue
                     pendingConnections.put(connectionNick + " " + remoteNick, clientSocket);
@@ -60,6 +62,8 @@ public class MyServerSocket {
                 }else {
                     //Start connection
                     Socket remoteSocket = pendingConnections.remove(remoteNick + " " +connectionNick);
+                    System.out.println(clientSocket);
+                    System.out.println(remoteSocket);
                     new Forwarder(clientSocket, remoteSocket).start();
                     new Forwarder(remoteSocket, clientSocket).start();
                 }
@@ -80,18 +84,21 @@ public class MyServerSocket {
 
             public void run(){
                 try {
-                    in = new BufferedReader(new InputStreamReader(entry.getInputStream()));
-                    out = new PrintWriter(exit.getOutputStream(), true);
+                    BufferedReader in = new BufferedReader(new InputStreamReader(entry.getInputStream()));
+                    PrintWriter out = new PrintWriter(exit.getOutputStream(), true);
 
-                    new PrintWriter(entry.getOutputStream(), true).println("Oki");
+                    out.println("Oki");
+                    System.out.println(in);
+                    System.out.println(out);
 
                     String inputLine;
                     while ((inputLine = in.readLine()) != null) {
                         out.println(inputLine);
+                        System.out.println(inputLine);
                     }
                     in.close();
                     out.close();
-                    clientSocket.close();
+                    entry.close();
                     
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
