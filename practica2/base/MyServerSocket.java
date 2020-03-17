@@ -69,7 +69,6 @@ public class MyServerSocket {
                 }
   
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
@@ -101,7 +100,6 @@ public class MyServerSocket {
                     entry.close();
                     
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
 
