@@ -4,7 +4,7 @@ import java.io.InputStreamReader;
 
 public class ClientMain {
     public static void main(final String args[]) throws IOException {
-        final MySocket socket = new MySocket("localhost", 6969);
+        final MySocket socket = new MySocket(args[0], args[1]);
 
         final ReaderThread readerThread = new ReaderThread(socket);
         final WriterThread writerThread = new WriterThread(socket);

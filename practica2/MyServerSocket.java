@@ -62,11 +62,8 @@ public class MyServerSocket {
                     Socket remoteSocket = pendingConnections.remove(remoteNick + " " +connectionNick);
                     new Forwarder(clientSocket, remoteSocket).start();
                     new Forwarder(remoteSocket, clientSocket).start();
-
                 }
-
-
-                
+  
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -87,6 +84,7 @@ public class MyServerSocket {
                     out = new PrintWriter(exit.getOutputStream(), true);
 
                     new PrintWriter(entry.getOutputStream(), true).println("Oki");
+
                     String inputLine;
                     while ((inputLine = in.readLine()) != null) {
                         out.println(inputLine);
