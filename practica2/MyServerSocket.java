@@ -4,6 +4,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MyServerSocket {
     /**
@@ -13,6 +15,7 @@ public class MyServerSocket {
      * lectura/escriptura dels tipus bàsics.
      */
     private ServerSocket serverSocket;
+    private Map <String, Socket> parells = new HashMap<>();
 
     /**
      * Acceptar clients i quan rep un client el passa a un altre socket
