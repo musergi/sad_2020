@@ -1,10 +1,9 @@
-public class ServerMain {
-    public static void main (String args[]){
-        MyServerSocket serverSocket;
-    }
+import java.io.IOException;
 
-    public class MyThread implements Runnable{ 
-        public void run(){
-        }
+public class ServerMain {
+    public static void main(String args[]) throws IOException {
+        MyServerSocket serverSocket = new MyServerSocket(696969);
+
+        serverSocket.listen();
     }
 }
