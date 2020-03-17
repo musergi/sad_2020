@@ -4,8 +4,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class MyServerSocket {
     /**
@@ -15,7 +15,7 @@ public class MyServerSocket {
      * lectura/escriptura dels tipus bàsics.
      */
     private ServerSocket serverSocket;
-    private Map <String, Socket> pendingConnections = new HashMap<>();
+    private Map <String, Socket> pendingConnections = new ConcurrentHashMap<>();
 
     /**
      * Acceptar clients i quan rep un client el passa a un altre socket
