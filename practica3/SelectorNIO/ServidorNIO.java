@@ -13,7 +13,7 @@ import java.util.*;
  * NIO: Defines buffers, which are containers for data, and provides an overview of the other NIO packages.
  */
 
- public class ServidorNIO {
+public class ServidorNIO {
     Selector selector ;
     ServerSocketChannel serverSocket ;
 
@@ -51,14 +51,13 @@ import java.util.*;
     }
 
     private static void answerWithEcho(ByteBuffer buffer, SelectionKey key) throws IOException {
-  
         SocketChannel client = (SocketChannel) key.channel();
         client.read(buffer);
         if (new String(buffer.array()).trim().equals("POISON_PILL")) {
             client.close();
             System.out.println("Not accepting client messages anymore");
         }
- 
+
         buffer.flip();
         client.write(buffer);
         buffer.clear();
@@ -82,4 +81,4 @@ import java.util.*;
  
         return builder.start();
     }
- }
+}
