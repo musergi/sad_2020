@@ -1,14 +1,19 @@
-public class ClientNIO{
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
+import java.nio.channels.*;
+
+public class ClientNIO {
     private static SocketChannel client;
     private static ByteBuffer buffer;
-    private static EchoClient instance;
+    private static ClientNIO instance;
  
     public static final String HOST_NAME = "localhost";
     public static final int PORT = 6969;
 
     public static ClientNIO start() {
         if (instance == null)
-            instance = new Client();
+            instance = new ClientNIO();
         return instance;
     }
  
@@ -17,7 +22,7 @@ public class ClientNIO{
         buffer = null;
     }
  
-    private Client() {
+    private ClientNIO() {
         try {
             client = SocketChannel.open(new InetSocketAddress(HOST_NAME, PORT));
             buffer = ByteBuffer.allocate(256);

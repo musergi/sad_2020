@@ -1,4 +1,8 @@
+import java.io.*;
+import java.net.*;
+import java.nio.*;
 import java.nio.channels.*;
+import java.util.*;
 
 /**
  * Patron reactor: El patrón de diseño reactor es un patrón de programación concurrente 
@@ -16,7 +20,7 @@ import java.nio.channels.*;
     public static final String HOST_NAME = "localhost";
     public static final int PORT = 6969;
     
-    public ServidorNIO (){
+    public ServidorNIO () throws IOException {
         selector = Selector.open();
         serverSocket = ServerSocketChannel.open();
         serverSocket.bind(new InetSocketAddress(HOST_NAME, PORT));
@@ -46,8 +50,7 @@ import java.nio.channels.*;
         }
     }
 
-    private static void answerWithEcho(ByteBuffer buffer, SelectionKey key)
-      throws IOException {
+    private static void answerWithEcho(ByteBuffer buffer, SelectionKey key) throws IOException {
   
         SocketChannel client = (SocketChannel) key.channel();
         client.read(buffer);
@@ -73,7 +76,7 @@ import java.nio.channels.*;
         String javaHome = System.getProperty("java.home");
         String javaBin = javaHome + File.separator + "bin" + File.separator + "java";
         String classpath = System.getProperty("java.class.path");
-        String className = EchoServer.class.getCanonicalName();
+        String className = ServidorNIO.class.getCanonicalName();
  
         ProcessBuilder builder = new ProcessBuilder(javaBin, "-cp", classpath, className);
  
