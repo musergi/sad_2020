@@ -1,6 +1,9 @@
 package server;
 
+import java.io.IOException;
 import java.net.ServerSocket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class is the superclass o all server socket implementations it is the 
@@ -8,26 +11,32 @@ import java.net.ServerSocket;
  * generic code commun to all sockets is written.
  */
 public abstract class ChatServerSocket {
-    public static final String DEFAULT_HOST = "localhost";
     public static final int DEFAULT_PORT = 6969;
+
+    protected static final Logger logger = Logger.getLogger("server");
 
     protected ServerSocket serverSocket;
 
     /**
      * Constructor that  build the socket with the specified host and port.
-     * @param host
      * @param port
      */
-    public ChatServerSocket(String host, int port) {
-        throw new RuntimeException("Not implemented");
+    public ChatServerSocket(int port) {
+        try {
+            serverSocket = new ServerSocket(port);
+            logger.info("Created server socket. Listening on port " + port + ".");
+        } catch (IOException e) {
+            logger.log(Level.SEVERE, "Failed to create socket on port " + port + ".");
+            System.exit(1);
+        }
     }
 
     /**
      * The constructor that build the socket with default host and port.
      */
     public ChatServerSocket() {
-        this(DEFAULT_HOST, DEFAULT_PORT);
+        this(DEFAULT_PORT);
     }
 
-    public abstract void listen();
+    public abstract void listen() throws IOException;
 }
