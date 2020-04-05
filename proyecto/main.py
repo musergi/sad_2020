@@ -1,5 +1,8 @@
 import tkinter as tk
+from urllib import request, parse
+from threading import Thread
 from functools import partial
+
 
 COLORS = ['red', 'blue', 'cyan', 'green', 'yellow', 'orange', 'black']
 
@@ -27,9 +30,21 @@ class Canvas:
 
     def press_handler(self, event):
         self.canvas.create_oval(event.x - 10, event.y - 10, event.x + 10, event.y + 10, fill=self.draw_color, outline='')
+        Thread(target=lambda:send_draw_data({
+            'shape': 'cicle',
+            'x': event.x,
+            'y': event.y,
+            'color': self.draw_color
+        }), daemon=True).start()
 
     def change_color(self, color):
         self.draw_color = color
+
+
+def send_draw_data(data_dict: dict):
+    data = parse.urlencode(data_dict)
+    request.urlopen(f"http://localhost:6969/drawing?{data}")
+
 
 # Create window object
 root = tk.Tk()
