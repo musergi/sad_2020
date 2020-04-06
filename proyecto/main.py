@@ -50,7 +50,8 @@ def send_draw_data(data_dict: dict):
 def get_draw_data(params=None):
     args = parse.urlencode(params)
     response = request.urlopen(f"http://localhost:6969/drawing?{args}")
-    return response.read.decode("utf-8")
+    response.read()
+    
 
 # Create window object
 root = tk.Tk()
