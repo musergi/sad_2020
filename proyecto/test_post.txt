@@ -1,0 +1,4 @@
+POST /drawing HTTP/1.0
+Content-Length: 53
+
+from=musergi&to=norma&shape=circle&x=10&y=5&color=red
