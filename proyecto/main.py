@@ -37,6 +37,8 @@ class Canvas:
             'color': self.draw_color
         }), daemon=True).start()
 
+        tk.after(5000, self.get_draw_data("FROM musergi TO norma"))
+
     def change_color(self, color):
         self.draw_color = color
 
@@ -45,6 +47,10 @@ def send_draw_data(data_dict: dict):
     data = parse.urlencode(data_dict)
     request.urlopen(f"http://localhost:6969/drawing?{data}")
 
+def get_draw_data(params=None):
+    args = parse.urlencode(params)
+    response = request.urlopen(f"http://localhost:6969/drawing?{args}")
+    return response.read.decode("utf-8")
 
 # Create window object
 root = tk.Tk()
