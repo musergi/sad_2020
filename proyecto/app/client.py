@@ -12,7 +12,10 @@ POLL_TIME = 5000
 
 
 class Canvas:
-    def __init__(self, root):
+    def __init__(self, root, socket: coms.ChatClientSocket):
+        # Setup socket
+        self.socket = socket
+
         # Create canvas to draw on
         self.canvas = tk.Canvas(root, width=800, height=600)
         self.canvas.grid(row=0, column=0, rowspan=len(COLORS))
@@ -29,19 +32,14 @@ class Canvas:
         self.canvas.bind('<B1-Motion>', self.press_handler) # Set mouse movement and pressed callback
         self.canvas.bind('<Button-1>', self.press_handler) # Set mouse press
 
-        Thread(target= lambda: get_draw_data({'from': 'musergi', 'to': 'norma'}, root, self.on_get_draw_data), daemon=True).start()
-
     def clear(self, event):
         self.canvas.delete(tk.ALL)
 
     def press_handler(self, event):
         self.canvas.create_oval(event.x - 10, event.y - 10, event.x + 10, event.y + 10, fill=self.draw_color, outline='')
-        Thread(target=lambda:send_draw_data({
-            'shape': 'cicle',
-            'x': event.x,
-            'y': event.y,
-            'color': self.draw_color
-        }), daemon=True).start()
+        draw_data = coms.DrawingData('circle', (event.x, event.y), self.draw_color)
+        self.socket.send_drawing_data(draw_data, ['norma'])
+
 
     def change_color(self, color):
         self.draw_color = color
@@ -62,17 +60,13 @@ def get_draw_data(params, root, drawing_callback):
         root.after(0, lambda: drawing_callback(drawing_data_object))
 
 
-def run():
+def run(username):
     # Create window object
     root = tk.Tk()
 
-    canvas = Canvas(root)
+    socket = coms.ChatClientSocket(username)
+    canvas = Canvas(root, socket)
     root.bind('<Key>', canvas.clear)
 
     # Enter event loop
     root.mainloop()
-
-def test():
-    c = coms.ChatSocket('musergi')
-    while True:
-        c.send_object(coms.DrawingData())

@@ -1,74 +1,93 @@
 import socket
-import pickle
+import json
 import threading
 
 
-BUFFER_SIZE = 20000
-DEFAULT_ADDRESS = socket.gethostname()
-DEFAULT_PORT = 6969
+from app.model import DrawingData
 
 
-class ChatSocket:
-    def __init__(self, username: str, address: str = DEFAULT_ADDRESS, port: int = DEFAULT_PORT):
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.socket.connect((address, port))
-        self.send_object(LoginData(username=username))
-
-    def send_object(self, data):
-        serialized_data = pickle.dumps(data)
-        if len(serialized_data) > BUFFER_SIZE:
-            raise IOError('Send buffer overflown')
-        self.socket.send(serialized_data)
-
-    def _listen_object(self, callback):
-        raw_data = self.socket.recv(BUFFER_SIZE)
-        data = pickle.loads(raw_data)
-        callback(data)
+IP_ADDRESS = socket.gethostname()
+TCP_PORT = 6969
 
 
+class DictSocket:
+    def __init__(self, clientsocket=None):
+        if clientsocket is None:
+            clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            clientsocket.connect((IP_ADDRESS, TCP_PORT))
+        self.socket = clientsocket
+    
+    def send_dict(self, data: dict):
+        json_str = json.dumps(data)
+        self._send_str(json_str)
+        
+    def listen(self, callback):
+       forwarder_thread = threading.Thread(
+           target=lambda: self._forward_to_func(callback),
+           daemon=True)
+       forwarder_thread.start()
+            
+    def _forward_to_func(self, func):
+         while True:
+            func(self.send_dictread_dict())
+    
+    def read_dict(self):
+        string = ''
+        while not string:
+            string = self._read_str()
+        data = json.loads(string)
+        return data
+
+    def _send_str(self, string: str):
+        f = self.socket.makefile('w')
+        f.write(f'{string}\n')
+        f.close()
+        
+    def _read_str(self):
+        f = self.socket.makefile('r')
+        string = f.readline()
+        f.close()
+        return string.strip()
+    
+
+
+class ChatClientSocket:
+    """Comunication class used by the client"""
+    def __init__(self, username):
+        self.username = username
+        self.dict_socket = DictSocket()
+        self.dict_socket.send_dict({'username': self.username})
+        self.dict_socket.listen(self.on_server_dict)
+
+    def send_drawing_data(self, drawing_data: DrawingData, to: list):
+        self.dict_socket.send_dict({
+            'from': self.username,
+            'to': to,
+            **vars(drawing_data)
+        })
+
+    def on_server_dict(self, server_dict):
+        print(server_dict)
 
 
 class ChatServerSocket:
-    def __init__(self, address: str = DEFAULT_ADDRESS, port: int = DEFAULT_PORT):
-        self.serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.serversocket.bind((address, port))
-        self.serversocket.listen(10)
-
+    def __init__(self):
+        self.active_clients = {}
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.socket.bind((IP_ADDRESS, TCP_PORT))
+        self.socket.listen(5)
+    
     def serve_forever(self):
         while True:
-            (clientsocket, address) = self.serversocket.accept()
-            threading.Thread(target=lambda: self._serve(clientsocket),
-                daemon=True).start()
-
-    def _serve(self, clientsocket):
-        raw_login_data = clientsocket.recv(BUFFER_SIZE)
-        print(len(raw_login_data))
-        login_data = pickle.loads(raw_login_data)
-        print(login_data)
-        while True:
-            recv_data = clientsocket.recv(BUFFER_SIZE)
-            print(len(recv_data))
-            data = pickle.loads(recv_data)
-            print(data)
-            clientsocket.send(recv_data)
-
-
-class LoginData:
-    def __init__(self, username):
-        self.username = username
-
-    def __str__(self):
-        return f'LoginData({self.username})'
-
-
-class DrawingData:
-    def __init__(self):
-        self.origin = 'musergi'
-        self.destination = ['norma']
-        self.shape = 'circle'
-        self.position = (0, 0)
-        self.color = 'red'
-
-    def __str__(self):
-        dest_string = ','.join(self.destination)
-        return f'Draw({self.origin},[{dest_string}],{self.shape},{self.position},{self.color})'
+            (clientsocket, address) = self.socket.accept()
+            dict_socket = DictSocket(clientsocket)
+            username = dict_socket.read_dict()['username']
+            self.active_clients[username] = dict_socket
+            dict_socket.listen(self._process_recived)
+    
+    def _process_recived(self, data: dict):
+        print(data)
+        destinations = data['to']
+        for dest in destinations:
+            if dest in self.active_clients:
+                self.active_clients[dest].send_dict(data)
