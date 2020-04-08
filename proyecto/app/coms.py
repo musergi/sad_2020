@@ -2,7 +2,6 @@ import socket
 import json
 import threading
 
-
 from app.model import DrawingData
 
 
@@ -11,27 +10,36 @@ TCP_PORT = 6969
 
 
 class DictSocket:
+    """Generic class for sending and receiving python dictionaries througth
+    a TCP socket"""
     def __init__(self, clientsocket=None):
+        """Constructor, it can recieve an already connected socket as a
+        parameter, if no socket is passed, it creates and connects a socket"""
         if clientsocket is None:
             clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             clientsocket.connect((IP_ADDRESS, TCP_PORT))
         self.socket = clientsocket
     
     def send_dict(self, data: dict):
+        """Sends a dict throught the network"""
         json_str = json.dumps(data)
         self._send_str(json_str)
         
     def listen(self, callback):
-       forwarder_thread = threading.Thread(
+        """Listens for the TCP input stream when a json is received parses it
+        to a dict and passes it to the callback passed in the parameters"""
+        forwarder_thread = threading.Thread(
            target=lambda: self._forward_to_func(callback),
            daemon=True)
-       forwarder_thread.start()
+        forwarder_thread.start()
             
     def _forward_to_func(self, func):
-         while True:
+        while True:
             func(self.send_dictread_dict())
     
     def read_dict(self):
+        """Reads a string from the TCP input stream if its not empty parses the
+        json and return it parsed as Python dict"""
         string = ''
         while not string:
             string = self._read_str()
