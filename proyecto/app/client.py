@@ -4,7 +4,7 @@ from urllib import request, parse
 from threading import Thread
 from functools import partial
 
-from app import coms
+from app import coms, model
 
 
 COLORS = ['red', 'blue', 'cyan', 'green', 'yellow', 'orange', 'black']
@@ -37,7 +37,7 @@ class Canvas:
 
     def press_handler(self, event):
         self.canvas.create_oval(event.x - 10, event.y - 10, event.x + 10, event.y + 10, fill=self.draw_color, outline='')
-        draw_data = coms.DrawingData('circle', (event.x, event.y), self.draw_color)
+        draw_data = model.DrawingData('circle', (event.x, event.y), self.draw_color)
         self.socket.send_drawing_data(draw_data, ['norma'])
 
 
@@ -46,18 +46,6 @@ class Canvas:
 
     def on_get_draw_data(self, draw_data):
         self.canvas.create_oval(draw_data.x - 10, draw_data.y - 10, draw_data.x + 10, draw_data.y + 10, fill=draw_data.color, outline='')
-        
-
-def send_draw_data(data_dict: dict):
-    pass
-
-def get_draw_data(params, root, drawing_callback):
-    while True:
-        # Sleep
-        args = parse.urlencode(params)
-        response = request.urlopen(f"http://localhost:6969/drawing?{args}")
-        drawing_data_object = pickle.loads(response.read())
-        root.after(0, lambda: drawing_callback(drawing_data_object))
 
 
 def run(username):
