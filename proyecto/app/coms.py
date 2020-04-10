@@ -35,7 +35,7 @@ class DictSocket:
             
     def _forward_to_func(self, func):
         while True:
-            func(self.send_dictread_dict())
+            func(self.read_dict())
     
     def read_dict(self):
         """Reads a string from the TCP input stream if its not empty parses the
@@ -66,6 +66,7 @@ class ChatClientSocket:
         self.dict_socket = DictSocket()
         self.dict_socket.send_dict({'username': self.username})
         self.dict_socket.listen(self.on_server_dict)
+        self.callbacks = []
 
     def send_drawing_data(self, drawing_data: DrawingData, to: list):
         self.dict_socket.send_dict({
@@ -75,7 +76,12 @@ class ChatClientSocket:
         })
 
     def on_server_dict(self, server_dict):
-        print(server_dict)
+        del server_dict['to']
+        del server_dict['from']
+        drawing_data = DrawingData(**server_dict)
+        for callback in self.callbacks:
+            callback(drawing_data)
+
 
 
 class ChatServerSocket:
