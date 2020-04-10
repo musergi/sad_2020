@@ -8,7 +8,6 @@ from app import coms, model
 
 
 COLORS = ['red', 'blue', 'cyan', 'green', 'yellow', 'orange', 'black']
-POLL_TIME = 5000
 
 
 class Canvas:
