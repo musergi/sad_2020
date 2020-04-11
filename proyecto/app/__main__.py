@@ -3,13 +3,11 @@ from app import client, server
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--client", type=bool, required=False)
-    parser.add_argument("--server", type=bool, required=False)
-    parser.add_argument("--username", type=str, required=False)
-    parser.add_argument("--peer", type=str, required=False)
+    parser.add_argument("--client", default=False, required=False, action='store_true')
+    parser.add_argument("--server", default=False, required=False, action='store_true')
     args = parser.parse_args()
 
     if args.client:
-        client.run(args.username, args.peer)
+        client.run()
     if args.server:
         server.run()

@@ -1,6 +1,7 @@
 import socket
 import json
 import threading
+from functools import partial
 
 from app.model import DrawingData
 
@@ -19,6 +20,7 @@ class DictSocket:
             clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             clientsocket.connect((IP_ADDRESS, TCP_PORT))
         self.socket = clientsocket
+        self.is_alive = True
     
     def send_dict(self, data: dict):
         """Sends a dict throught the network"""
@@ -34,15 +36,19 @@ class DictSocket:
         forwarder_thread.start()
             
     def _forward_to_func(self, func):
-        while True:
+        while self.is_alive:
             func(self.read_dict())
     
     def read_dict(self):
         """Reads a string from the TCP input stream if its not empty parses the
         json and return it parsed as Python dict"""
         string = ''
+        empty_count = -1
         while not string:
+            empty_count += 1
             string = self._read_str()
+            if empty_count == 5:
+                self.is_alive = False
         data = json.loads(string)
         return data
 
@@ -56,7 +62,6 @@ class DictSocket:
         string = f.readline()
         f.close()
         return string.strip()
-    
 
 
 class ChatClientSocket:
@@ -64,15 +69,24 @@ class ChatClientSocket:
     def __init__(self, username):
         self.username = username
         self.dict_socket = DictSocket()
-        self.dict_socket.send_dict({'username': self.username})
+        self.dict_socket.send_dict({'type':'login', 'username': self.username})
+        response = self.dict_socket.read_dict()
+        if response['type'] == 'login_deny':
+            raise ConnectionError(response['message'])
         self.dict_socket.listen(self.on_server_dict)
-        self.callbacks = []
 
     def send_drawing_data(self, drawing_data: DrawingData, to: list):
         self.dict_socket.send_dict({
             'from': self.username,
             'to': to,
             **vars(drawing_data)
+        })
+
+    def create_room(self, peers):
+        self.dict_socket.send_dict({
+            'type':'create_room',
+            'username': self.username,
+            'peers': peers,
         })
 
     def on_server_dict(self, server_dict):
@@ -87,20 +101,37 @@ class ChatClientSocket:
 class ChatServerSocket:
     def __init__(self):
         self.active_clients = {}
+        self.rooms = {}
+
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.bind((IP_ADDRESS, TCP_PORT))
         self.socket.listen(5)
     
     def serve_forever(self):
         while True:
-            (clientsocket, address) = self.socket.accept()
-            dict_socket = DictSocket(clientsocket)
-            username = dict_socket.read_dict()['username']
-            self.active_clients[username] = dict_socket
-            dict_socket.listen(self._process_recived)
+            (clientsocket, address) = self.socket.accept() # Accept connection
+            dict_socket = DictSocket(clientsocket) # Create dict socket
+
+            # Listens for all packages from socket
+            dict_socket.listen(partial(self._process_recived, socket=dict_socket))
     
-    def _process_recived(self, data: dict):
+    def _process_recived(self, data: dict, socket: DictSocket):
         print(data)
+
+        paquet_type = data['type']
+        if paquet_type == 'login':
+            username = data['username']
+            if username in self.active_clients and self.active_clients[username].is_alive:
+                socket.send_dict({'type': 'login_deny', 'message': 'Username already in use'})
+                return
+            self.active_clients[username] = socket
+            socket.send_dict({'type': 'login_accept'})
+            return
+
+        if paquet_type == 'create_room':
+            print('Creating room')
+            return
+
         destinations = data['to']
         for dest in destinations:
             if dest in self.active_clients:
