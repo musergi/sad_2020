@@ -3,8 +3,6 @@ import json
 import threading
 from functools import partial
 
-from app.model import DrawingData
-
 
 IP_ADDRESS = socket.gethostname()
 TCP_PORT = 6969
@@ -74,34 +72,38 @@ class ChatClientSocket:
         if response['type'] == 'login_deny':
             raise ConnectionError(response['message'])
         self.dict_socket.listen(self.on_server_dict)
+        self.callbacks = []
 
-    def send_drawing_data(self, drawing_data: DrawingData, to: list):
+    def send_drawing_data(self, drawing_data: dict, room: str):
         self.dict_socket.send_dict({
-            'from': self.username,
-            'to': to,
-            **vars(drawing_data)
+            'type': 'drawing_data',
+            'username': self.username,
+            'room': room,
+            **drawing_data
         })
 
-    def create_room(self, peers):
+    def create_room(self):
         self.dict_socket.send_dict({
             'type':'create_room',
+            'username': self.username
+        })
+
+    def join_room(self, room_name):
+        self.dict_socket.send_dict({
+            'type':'join_room',
             'username': self.username,
-            'peers': peers,
+            'room_name': room_name
         })
 
     def on_server_dict(self, server_dict):
-        del server_dict['to']
-        del server_dict['from']
-        drawing_data = DrawingData(**server_dict)
         for callback in self.callbacks:
-            callback(drawing_data)
-
+            callback(server_dict)
 
 
 class ChatServerSocket:
     def __init__(self):
         self.active_clients = {}
-        self.rooms = {}
+        self.rooms = Rooms()
 
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.bind((IP_ADDRESS, TCP_PORT))
@@ -129,10 +131,50 @@ class ChatServerSocket:
             return
 
         if paquet_type == 'create_room':
-            print('Creating room')
+            username = data['username']
+            print(f'Creating room: {username}')
+            self.rooms.create(username)
             return
 
-        destinations = data['to']
-        for dest in destinations:
-            if dest in self.active_clients:
-                self.active_clients[dest].send_dict(data)
+        if paquet_type == 'join_room':
+            username = data['username']
+            room_name = data['room_name']
+            self.rooms.join(name=room_name, user=username)
+            print(self.rooms.rooms)
+            return
+
+        if paquet_type == 'drawing_data':
+            username = data['username']
+            room = data['room']
+            destinations = self.rooms.get(room, username)
+            for dest in destinations:
+                socket = self.active_clients[dest]
+                if not socket.is_alive:
+                    self.rooms.remove(room, dest)
+                    del self.active_clients[dest]
+                    return
+                socket.send_dict(data)
+
+
+class Rooms:
+    def __init__(self):
+        self.lock = threading.RLock()
+        self.rooms = {}
+
+    def create(self, name):
+        with self.lock:
+            self.rooms[name] = {name}
+
+    def join(self, name, user):
+        with self.lock:
+            self.rooms[name].add(user)
+
+    def get(self, name, user):
+        res = {}
+        with self.lock:
+            res = self.rooms[name] - {user}
+        return res
+
+    def remove(self, name, user):
+        with self.lock:
+            self.rooms[name].remove(user)

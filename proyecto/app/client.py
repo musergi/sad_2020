@@ -5,7 +5,7 @@ from urllib import request, parse
 from threading import Thread
 from functools import partial
 
-from app import coms, model
+from app import coms
 
 
 COLORS = ['red', 'blue', 'cyan', 'green', 'yellow', 'orange', 'black']
@@ -26,7 +26,7 @@ class App:
     def _build_ui(self):
         self.main_container.pack(fill='both', expand=True)
 
-        frameTypes = [LoginFrame, StartingFrame, AskPeerFrame, CanvasFrame]
+        frameTypes = [LoginFrame, StartingFrame, CanvasFrame]
         for FrameType in frameTypes:
             self.frames[FrameType] = FrameType(self.main_container, self)
 
@@ -41,7 +41,7 @@ class App:
         if not username.strip():
             error_callback('Username can not be empty')
             return
-            
+        
         try:
             self.socket = coms.ChatClientSocket(username=username)
         except ConnectionRefusedError:
@@ -50,9 +50,17 @@ class App:
             error_callback(e)
         self.root.after(0, success_callback)
 
-    def attempt_chat_creation(self, peers, success_callback, error_callback):
-        print(peers)
-        self.socket.create_room(peers)
+    def attempt_chat_creation(self):
+        self.socket.create_room()
+        self.frames[CanvasFrame].room = self.socket.username
+        self.socket.callbacks.append(self.frames[CanvasFrame].on_draw_data)
+        self.root.after(0, lambda: self.show_frame(CanvasFrame))
+
+    def attempt_chat_join(self, chat_name):
+        self.socket.join_room(chat_name)
+        self.frames[CanvasFrame].room = chat_name
+        self.socket.callbacks.append(self.frames[CanvasFrame].on_draw_data)
+        self.root.after(0, lambda: self.show_frame(CanvasFrame))
 
     def run(self):
         # Enter event loop
@@ -89,7 +97,6 @@ class LoginFrame(tk.Frame):
 
     def on_login_succes(self):
         self.controller.show_frame(StartingFrame)
-        #TODO: Add listener for join request
 
     def on_login_fail(self, error):
         print(error)
@@ -100,13 +107,36 @@ class StartingFrame(tk.Frame):
     def __init__(self, master, controller, *args, **kw):
         super().__init__(master=master, *args, **kw)
         self.grid(row=0, column=0, sticky='nsew')
+        
+        self.controller = controller
+        self.join_entry_content = tk.StringVar()
 
         self.container = tk.Frame(self)
         self.container.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
+
         self.label = tk.Label(self.container, text="Create chat or wait for one to be created", font=DEFAULT_FONT)
+        self.create_container = tk.Frame(self.container)
+        self.create_button = tk.Button(self.create_container, text='Create chat', font=DEFAULT_FONT, command=self.on_create_chat)
+        self.join_container = tk.Frame(self.container)
+        self.join_entry = tk.Entry(self.join_container, font=DEFAULT_FONT, textvariable=self.join_entry_content)
+        self.join_button = tk.Button(self.join_container, text='Join', font=DEFAULT_FONT, command=self.on_join_chat)
+
         self.label.grid(row=0, column=0, pady=40)
-        self.button = tk.Button(self.container, text='Create chat', font=DEFAULT_FONT, command=lambda: controller.show_frame(AskPeerFrame))
-        self.button.grid(row=1, column=0)
+        self.create_container.grid(row=1, column=0, pady=40)
+        self.join_container.grid(row=2, column=0, pady=40)
+
+        self.create_button.pack()
+
+        self.join_entry.grid(row=0, column=0)
+        self.join_button.grid(row=1, column=0, pady=10)
+
+    def on_create_chat(self):
+        Thread(target=self.controller.attempt_chat_creation, daemon=True).start()
+
+    def on_join_chat(self):
+        Thread(target=lambda: self.controller.attempt_chat_join(
+            chat_name=self.join_entry_content.get()
+        ), daemon=True).start()
 
 
 class AskPeerFrame(tk.Frame):
@@ -141,7 +171,14 @@ class CanvasFrame(tk.Frame):
     def __init__(self, master, controller, *args, **kw):
         super().__init__(master=master, *args, **kw)
         self.grid(row=0, column=0, sticky='nsew')
+
+        self.room = None
+        self.controller = controller
+
         self.canvas = tk.Canvas(self, width=800, height=600)
+        self.canvas.bind('<B1-Motion>', self.on_mouse_press) # Set mouse movement and pressed callback
+        self.canvas.bind('<Button-1>', self.on_mouse_press) # Set mouse press
+
         self.canvas.grid(row=0, column=0, rowspan=len(COLORS))
 
         # Draw color attribute
@@ -149,48 +186,24 @@ class CanvasFrame(tk.Frame):
 
         # Add color buttons
         for i, color in enumerate(COLORS):
-            button = tk.Button(self, background=color, command=partial(print, color))
+            button = tk.Button(self, background=color, command=partial(self.change_color, color))
             button.grid(row=i, column=1)
 
+    def change_color(self, new_color):
+        self.draw_color = new_color
 
-class Canvas:
-    def __init__(self, root, socket: coms.ChatClientSocket, peers: list):
-        # Setup socket
-        self.socket = socket
-        self.peers = peers
+    def on_draw_data(self, data):
+        if data['type'] == 'drawing_data':
+            x, y = data['position']
+            color = data['color']
+            self.controller.root.after(0, lambda: self.canvas.create_oval(x - 10, y - 10, x + 10, y + 10, fill=color, outline=''))
 
-        # Create canvas to draw on
-        self.canvas = tk.Canvas(root, width=800, height=600)
-        self.canvas.grid(row=0, column=0, rowspan=len(COLORS))
-        
-        # Draw color attribute
-        self.draw_color = COLORS[0]
-
-        # Add color buttons
-        for i, color in enumerate(COLORS):
-            button = tk.Button(root, background=color, command=partial(self.change_color, color=color))
-            button.grid(row=i, column=1)
-
-        # Set drawing callback
-        self.canvas.bind('<B1-Motion>', self.press_handler) # Set mouse movement and pressed callback
-        self.canvas.bind('<Button-1>', self.press_handler) # Set mouse press
-        self.socket.callbacks.append(self.on_get_draw_data)
-
-    def clear(self, event):
-        self.canvas.delete(tk.ALL)
-
-    def press_handler(self, event):
+    def on_mouse_press(self, event):
         self.canvas.create_oval(event.x - 10, event.y - 10, event.x + 10, event.y + 10, fill=self.draw_color, outline='')
-        draw_data = model.DrawingData('circle', (event.x, event.y), self.draw_color)
-        self.socket.send_drawing_data(draw_data, self.peers)
+        Thread(target=self.controller.socket.send_drawing_data(drawing_data={
+            'position': [event.x, event.y],
+            'color': self.draw_color}, room=self.room), daemon=True).start()
 
-    def change_color(self, color):
-        self.draw_color = color
-
-    def on_get_draw_data(self, draw_data):
-        x = draw_data.position[0]
-        y = draw_data.position[1]
-        self.canvas.create_oval(x - 10, y - 10, x + 10, y + 10, fill=draw_data.color, outline='')
 
 def run():
     app = App()
