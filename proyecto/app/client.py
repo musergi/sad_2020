@@ -139,34 +139,6 @@ class StartingFrame(tk.Frame):
         ), daemon=True).start()
 
 
-class AskPeerFrame(tk.Frame):
-    def __init__(self, master, controller, *args, **kw):
-        super().__init__(master=master, *args, **kw)
-        self.grid(row=0, column=0, sticky='nsew')
-
-        self.controller = controller
-        self.entry_var = tk.StringVar()
-
-        self.container = tk.Frame(self)
-        self.container.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
-        self.label = tk.Label(self.container, text='Enter peer names separated by a coma', font=DEFAULT_FONT)
-        self.entry = tk.Entry(self.container, font=DEFAULT_FONT, textvariable=self.entry_var)
-        self.button = tk.Button(self.container, text='OK', font=DEFAULT_FONT, command=self.on_button_press)
-
-        self.label.grid(row=0, column=0, columnspan=2, pady=20)
-        self.entry.grid(row=1, column=0)
-        self.button.grid(row=1, column=1, padx=10)
-
-    def on_button_press(self):
-        string = self.entry_var.get()
-        raw_name_strings = string.split(',')
-        names = [name.strip() for name in raw_name_strings]
-        Thread(target=self.controller.attempt_chat_creation(
-            peers=names,
-            success_callback=lambda: print('Succes'),
-            error_callback=lambda: print('Error')), daemon=True).start()
-
-
 class CanvasFrame(tk.Frame):
     def __init__(self, master, controller, *args, **kw):
         super().__init__(master=master, *args, **kw)
