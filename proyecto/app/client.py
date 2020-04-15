@@ -8,7 +8,7 @@ from functools import partial
 from app import coms
 
 
-COLORS = ['red', 'blue', 'cyan', 'green', 'yellow', 'orange', 'black']
+COLORS = ['red', 'blue', 'cyan', 'green', 'yellow', 'orange', 'black', 'white']
 DEFAULT_FONT = ('Monospace', 20)
 
 
