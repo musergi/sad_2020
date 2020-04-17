@@ -57,7 +57,9 @@ class App:
         self.root.after(0, lambda: self.show_frame(CanvasFrame))
 
     def attempt_chat_join(self, chat_name):
-        self.socket.join_room(chat_name)
+        self.socket.join_room(chat_name, self.on_join_success)
+
+    def on_join_success(self, chat_name):
         self.frames[CanvasFrame].room = chat_name
         self.socket.callbacks.append(self.frames[CanvasFrame].on_draw_data)
         self.root.after(0, lambda: self.show_frame(CanvasFrame))

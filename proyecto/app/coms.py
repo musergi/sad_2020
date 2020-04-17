@@ -71,8 +71,8 @@ class ChatClientSocket:
         response = self.dict_socket.read_dict()
         if response['type'] == 'login_deny':
             raise ConnectionError(response['message'])
-        self.dict_socket.listen(self.on_server_dict)
         self.callbacks = []
+        self.dict_socket.listen(self.on_server_dict)
 
     def send_drawing_data(self, drawing_data: dict, room: str):
         self.dict_socket.send_dict({
@@ -88,12 +88,18 @@ class ChatClientSocket:
             'username': self.username
         })
 
-    def join_room(self, room_name):
+    def join_room(self, room_name, succes_callback):
         self.dict_socket.send_dict({
             'type':'join_room',
             'username': self.username,
             'room_name': room_name
         })
+        self.callbacks.append(partial(self.on_join_callback, callback=succes_callback))
+
+    def on_join_callback(self, data, callback):
+        if data['type'] == 'join_success':
+            self.callbacks = []
+            callback(data['room'])
 
     def on_server_dict(self, server_dict):
         for callback in self.callbacks:
@@ -139,8 +145,16 @@ class ChatServerSocket:
         if paquet_type == 'join_room':
             username = data['username']
             room_name = data['room_name']
-            self.rooms.join(name=room_name, user=username)
-            print(self.rooms.rooms)
+            try:
+                self.rooms.join(name=room_name, user=username)
+                print(self.rooms.rooms)
+            except KeyError:
+                socket.send_dict({
+                    'type': 'join_error',
+                    'message': 'The room you wish to enter does not exist'
+                })
+                return
+            socket.send_dict({'type': 'join_success', 'room':room_name})
             return
 
         if paquet_type == 'drawing_data':
