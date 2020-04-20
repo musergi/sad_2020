@@ -46,8 +46,10 @@ class App:
             self.socket = coms.ChatClientSocket(username=username)
         except ConnectionRefusedError:
             error_callback('Server unavailable or unreachable')
+            return
         except ConnectionError as e:
             error_callback(e)
+            return
         self.root.after(0, success_callback)
 
     def attempt_chat_creation(self):
