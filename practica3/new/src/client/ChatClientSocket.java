@@ -36,14 +36,14 @@ public class ChatClientSocket {
             new Thread(new Runnable(){
                 @Override
                 public void run() {
-                    try {
                         String message;
-                        while ((message = in.readLine()) != null) {
-                            messages.addElement(message);
+                        try {
+                            while ((message = in.readLine()) != null) {
+                                messages.addElement(message);
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
                 }
             }).start();
         } catch (IOException e) {
