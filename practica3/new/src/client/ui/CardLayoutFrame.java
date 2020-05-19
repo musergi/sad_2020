@@ -83,6 +83,34 @@ class ChatSelectionPanel extends JPanel {
 
     public ChatSelectionPanel(JPanel panel) {
         contentPanel = panel;
+
+        JTextArea loginText = new JTextArea("OPEN CHAT");
+        add(loginText, genGridConstraint(0, 1, 2, 2, 1.0));
+
+        JTextField usernameTextField = new JTextField("Enter a friend's name", 30);
+        add(usernameTextField, genGridConstraint(1, 1, 2, 2, 1.0));
+
+        JButton usernameConfirmButton = new JButton("Enter");
+        usernameConfirmButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                //Change the panel
+                CardLayout cardLayout = (CardLayout) contentPanel.getLayout();
+                cardLayout.next(contentPanel);
+            }
+        });
+        add(usernameConfirmButton, genGridConstraint(1, 2, 1, 1, 0.0));
+
+        setVisible(true);
+    }
+    private GridBagConstraints genGridConstraint(int x, int y, int width, int height, double weighty) {
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = x;
+        c.gridy = y;
+        c.gridwidth = width;
+        c.gridheight = height;
+        c.weighty = weighty;
+        return c;
     }
 }
 
