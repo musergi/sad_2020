@@ -6,7 +6,7 @@ import java.util.Vector;
 
 import javax.swing.*;
 
-import client.ui.ChatFrame;
+import client.ui.CardLayoutFrame;
 
 public class Client extends Thread {
     public static String DEFAULT_HOST = "localhost";
@@ -31,7 +31,7 @@ public class Client extends Thread {
     }
 
     public void run() {
-        new ChatFrame(this, messages);
+        new CardLayoutFrame().displayGUI(this, messages);
     }
 
     public void openChat(String remoteUsername) {

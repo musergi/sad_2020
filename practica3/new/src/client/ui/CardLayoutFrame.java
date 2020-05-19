@@ -12,9 +12,8 @@ public class CardLayoutFrame {
     private ChatSelectionPanel chatSelectionPanel;
     private ChatPanel chatPanel;
 
-    private void displayGUI()
-    {
-        JFrame frame = new JFrame("Card Layout Example");
+    public void displayGUI(Client client, ListModel<String> messages) {
+        JFrame frame = new JFrame("Chats");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 600);
         frame.setLayout(new GridBagLayout());
@@ -26,7 +25,7 @@ public class CardLayoutFrame {
         // Create the different panels 
         loginPanel = new LoginPanel(contentPanel);
         chatSelectionPanel = new ChatSelectionPanel(contentPanel);
-        chatPanel = new ChatPanel(contentPanel);
+        chatPanel = new ChatPanel(contentPanel, client, messages);
         
         // Add the different pannels to the main Frame
         contentPanel.add(loginPanel, "Login Panel"); 
@@ -48,10 +47,10 @@ class LoginPanel extends JPanel {
         contentPanel = panel;
 
         JTextArea loginText = new JTextArea("LOGIN");
-        add(loginText, genGridConstraint(1, 0, 1, 1));
+        add(loginText, genGridConstraint(0, 1, 2, 2, 1.0));
 
-        JTextField usernameTextField = new JTextField(30);
-        add(usernameTextField, genGridConstraint(0, 0, 1, 1));
+        JTextField usernameTextField = new JTextField("Username", 30);
+        add(usernameTextField, genGridConstraint(1, 1, 2, 2, 1.0));
 
         JButton usernameConfirmButton = new JButton("Enter chats");
         usernameConfirmButton.addActionListener(new ActionListener() {
@@ -62,17 +61,18 @@ class LoginPanel extends JPanel {
                 cardLayout.next(contentPanel);
             }
         });
-        add(usernameConfirmButton, genGridConstraint(1, 0, 1, 1));
+        add(usernameConfirmButton, genGridConstraint(1, 2, 1, 1, 0.0));
 
         setVisible(true);
     }
 
-    private GridBagConstraints genGridConstraint(int x, int y, int width, int height) {
+    private GridBagConstraints genGridConstraint(int x, int y, int width, int height, double weighty) {
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = x;
         c.gridy = y;
         c.gridwidth = width;
         c.gridheight = height;
+        c.weighty = weighty;
         return c;
     }
 }
