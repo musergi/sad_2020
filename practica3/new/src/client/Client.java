@@ -13,6 +13,7 @@ public class Client extends Thread {
     public static int DEFAULT_PORT = 6969;
 
     private String username;
+    private String remoteUsername;
     private String host;
     private int port;
     private ChatClientSocket socket;
@@ -24,18 +25,15 @@ public class Client extends Thread {
         messages = new DefaultListModel<>();
     }
         
-
     public Client() {
         this(DEFAULT_HOST, DEFAULT_PORT);
     }
-
-    
 
     public void run() {
         new CardLayoutFrame().displayGUI(this, messages);
     }
 
-    public void openChat(String remoteUsername) {
+    public void openChat() {
         new Thread(new Runnable(){
             @Override
             public void run() {
@@ -57,4 +55,13 @@ public class Client extends Thread {
     public void setUsername(String username) {
         this.username = username;
     }
+
+    public String getRemoteusername() {
+        return remoteUsername;
+    }
+
+    public void setRemoteusername(String remoteusername) {
+        this.remoteUsername = remoteusername;
+    }
+    
 }

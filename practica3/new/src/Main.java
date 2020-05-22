@@ -20,8 +20,7 @@ public class Main {
             }
             Server server = new Server(serverSocket);
             server.start();
-        } else if (args.length > 1 && args[0].equals("client")) {
-            String clientname = args[1];
+        } else if (args.length > 0 && args[0].equals("client")) {
             Client client = new Client();
             client.start();
         }
