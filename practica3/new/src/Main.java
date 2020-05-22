@@ -22,7 +22,7 @@ public class Main {
             server.start();
         } else if (args.length > 1 && args[0].equals("client")) {
             String clientname = args[1];
-            Client client = new Client(clientname);
+            Client client = new Client();
             client.start();
         }
     }
