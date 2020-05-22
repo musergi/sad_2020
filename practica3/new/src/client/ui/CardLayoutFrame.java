@@ -44,10 +44,13 @@ public class CardLayoutFrame {
 class LoginPanel extends JPanel {
     private JPanel contentPanel;
     private Client client;
+    private Boolean firstClick;
 
     public LoginPanel(JPanel panel, Client client) {
         this.client = client;
         contentPanel = panel;
+        firstClick = true; 
+
         setSize(800, 600);
         setLayout(new GridBagLayout());
         
@@ -56,6 +59,17 @@ class LoginPanel extends JPanel {
         add(loginText, GridGenerator.generate(1, 0, 1, 1, 1.0));
         //Create a username text field
         JTextField usernameTextField = new JTextField("Username", 30);
+        usernameTextField.setForeground(Color.GRAY);
+        usernameTextField.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+                if (firstClick){
+                    usernameTextField.setText("");
+                    usernameTextField.setForeground(Color.BLACK);
+                    firstClick ^= firstClick;
+                }
+			}
+		});
         add(usernameTextField, GridGenerator.generate(1, 1, 1, 1, 1.0));
         //Create a button
         JButton usernameConfirmButton = new JButton("Enter chats");
@@ -78,16 +92,29 @@ class LoginPanel extends JPanel {
 class ChatSelectionPanel extends JPanel {
     private JPanel contentPanel;
     private Client controller;
+    private Boolean firstClick;
 
     public ChatSelectionPanel(JPanel panel, Client client) {
         contentPanel = panel;
         controller = client;
+        firstClick = true;
         setLayout(new GridBagLayout());
 
         JTextArea loginText = new JTextArea("OPEN CHAT");
         add(loginText, GridGenerator.generate(1, 0, 1, 1, 1.0));
 
         JTextField remoteTextField = new JTextField("Enter a friend's name", 30);
+        remoteTextField.setForeground(Color.GRAY);
+        remoteTextField.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+                if (firstClick){
+                    remoteTextField.setText("");
+                    remoteTextField.setForeground(Color.BLACK);
+                    firstClick ^= firstClick;
+                }
+			}
+		});
         add(remoteTextField, GridGenerator.generate(1, 1, 1, 1, 1.0));
 
         JButton usernameConfirmButton = new JButton("Enter");
