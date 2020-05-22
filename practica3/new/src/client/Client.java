@@ -18,17 +18,18 @@ public class Client extends Thread {
     private ChatClientSocket socket;
     private DefaultListModel<String> messages;
     
-    public Client(String host, int port, String username) {
+    public Client(String host, int port) {
         this.host = host;
         this.port = port;
-        this.username = username;
         messages = new DefaultListModel<>();
     }
         
 
-    public Client(String username) {
-        this(DEFAULT_HOST, DEFAULT_PORT, username);
+    public Client() {
+        this(DEFAULT_HOST, DEFAULT_PORT);
     }
+
+    
 
     public void run() {
         new CardLayoutFrame().displayGUI(this, messages);
@@ -47,5 +48,13 @@ public class Client extends Thread {
     public void sendMessage(String message) {
         messages.addElement(message);
         socket.sendMessage(message);
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

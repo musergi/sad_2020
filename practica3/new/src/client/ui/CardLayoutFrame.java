@@ -24,7 +24,7 @@ public class CardLayoutFrame {
         contentPanel.setLayout(new CardLayout());
 
         // Create the different panels 
-        loginPanel = new LoginPanel(contentPanel);
+        loginPanel = new LoginPanel(contentPanel, client);
         chatSelectionPanel = new ChatSelectionPanel(contentPanel);
         chatPanel = new ChatPanel(contentPanel, client, messages);
         
@@ -42,11 +42,13 @@ public class CardLayoutFrame {
 
 class LoginPanel extends JPanel {
     private JPanel contentPanel;
+    private Client client;
 
-    public LoginPanel(JPanel panel) {
-
+    public LoginPanel(JPanel panel, Client client) {
+        this.client = client;
         contentPanel = panel;
         setSize(800, 600);
+        setLayout(new GridBagLayout());
         
         JTextArea loginText = new JTextArea("LOGIN");
         add(loginText, genGridConstraint(0, 1, 2, 2, 1.0));
