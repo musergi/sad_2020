@@ -14,6 +14,7 @@ public class CardLayoutFrame {
 
     public void displayGUI(Client client, ListModel<String> messages) {
         JFrame frame = new JFrame("Chats");
+
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 600);
         frame.setLayout(new GridBagLayout());
@@ -45,7 +46,8 @@ class LoginPanel extends JPanel {
     public LoginPanel(JPanel panel) {
 
         contentPanel = panel;
-
+        setSize(800, 600);
+        
         JTextArea loginText = new JTextArea("LOGIN");
         add(loginText, genGridConstraint(0, 1, 2, 2, 1.0));
 
