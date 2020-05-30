@@ -1,3 +1,9 @@
+/**
+ * To execute: 
+ * java -classpath bin Main server
+ * java -classpath bin Main client
+ */
+
 import client.Client;
 import server.*;
 
