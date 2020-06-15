@@ -152,10 +152,10 @@ class ChatPanel extends JPanel {
         setLayout(new GridBagLayout());
 
         JList<String> messageList = new JList<>(messages);
-        add(messageList, GridGenerator.generate(0, 1, 1, 1, 1.0));
+        add(messageList, GridGenerator.generate(1, 0, 1, 1, 1.0));
 
-        JTextField messageTextField = new JTextField(20);
-        add(messageTextField, GridGenerator.generate(0, 2, 1, 1, 1.0));
+        JTextField messageTextField = new JTextField(30);
+        add(messageTextField, GridGenerator.generate(1, 1, 1, 1, 1.0));
 
         JButton sendMessageButton = new JButton("Send Message");
         sendMessageButton.addActionListener(new ActionListener() {
@@ -166,7 +166,7 @@ class ChatPanel extends JPanel {
                 controller.sendMessage(message);
             }
         });
-        add(sendMessageButton, GridGenerator.generate(2, 2, 1, 1, 0.0));
+        add(sendMessageButton, GridGenerator.generate(2, 1, 1, 1, 0.0));
 
         setVisible(true);
     }
