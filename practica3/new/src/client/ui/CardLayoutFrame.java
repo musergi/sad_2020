@@ -22,6 +22,7 @@ public class CardLayoutFrame {
         //Create the container which will have the three different panels
         JPanel contentPanel = new JPanel();
         contentPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        contentPanel.setBackground(new Color(220,247,246));
         contentPanel.setLayout(new CardLayout());
 
         // Create the different panels 
@@ -51,11 +52,12 @@ class LoginPanel extends JPanel {
         contentPanel = panel;
         firstClick = true; 
 
-        setSize(800, 600);
+        setBackground(new Color(220,247,246));
         setLayout(new GridBagLayout());
         
         //Create login text button
         JTextArea loginText = new JTextArea("LOGIN");
+        loginText.setBackground(new Color(220,247,246));
         add(loginText, GridGenerator.generate(1, 0, 1, 1, 1.0));
         //Create a username text field
         JTextField usernameTextField = new JTextField("Username", 30);
@@ -98,9 +100,12 @@ class ChatSelectionPanel extends JPanel {
         contentPanel = panel;
         controller = client;
         firstClick = true;
+
+        setBackground(new Color(220,247,246));
         setLayout(new GridBagLayout());
 
         JTextArea loginText = new JTextArea("OPEN CHAT");
+        loginText.setBackground(new Color(220,247,246));
         add(loginText, GridGenerator.generate(1, 0, 1, 1, 1.0));
 
         JTextField remoteTextField = new JTextField("Enter a friend's name", 30);
@@ -142,15 +147,17 @@ class ChatPanel extends JPanel {
     public ChatPanel(JPanel panel, Client client, ListModel<String> messages) {
         contentPanel = panel;
         controller = client;
+
+        setBackground(new Color(220,247,246));
         setLayout(new GridBagLayout());
 
         JList<String> messageList = new JList<>(messages);
-        add(messageList, GridGenerator.generate(0, 1, 1, 1, 0.0));
+        add(messageList, GridGenerator.generate(0, 1, 1, 1, 1.0));
 
-        JTextField messageTextField = new JTextField(30);
+        JTextField messageTextField = new JTextField(20);
         add(messageTextField, GridGenerator.generate(0, 2, 1, 1, 1.0));
 
-        JButton sendMessageButton = new JButton("Send message");
+        JButton sendMessageButton = new JButton("Send Message");
         sendMessageButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
@@ -159,7 +166,7 @@ class ChatPanel extends JPanel {
                 controller.sendMessage(message);
             }
         });
-        add(sendMessageButton, GridGenerator.generate(1, 2, 1, 1, 0.0));
+        add(sendMessageButton, GridGenerator.generate(2, 2, 1, 1, 0.0));
 
         setVisible(true);
     }
