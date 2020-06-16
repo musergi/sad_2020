@@ -16,7 +16,6 @@ public class CardLayoutFrame {
 
         //Set default frame configuration 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800, 600);
         frame.setLayout(new GridBagLayout());
         
         //Create the container which will have the three different panels
