@@ -37,7 +37,7 @@ public class CardLayoutFrame {
         frame.setContentPane(contentPanel);
         frame.pack();   
         frame.setLocationByPlatform(true);
-        frame.setMinimumSize(1920, 1080);
+        frame.setMinimumSize(new Dimension(250, 200));
         frame.setVisible(true);
     }
 }
@@ -58,7 +58,9 @@ class LoginPanel extends JPanel {
         //Create login text button
         JTextArea loginText = new JTextArea("LOGIN");
         loginText.setBackground(new Color(220,247,246));
+        loginText.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 30));
         add(loginText, GridGenerator.generate(1, 0, 1, 1, 1.0));
+
         //Create a username text field
         JTextField usernameTextField = new JTextField("Username", 30);
         usernameTextField.setForeground(Color.GRAY);
@@ -106,6 +108,7 @@ class ChatSelectionPanel extends JPanel {
 
         JTextArea loginText = new JTextArea("OPEN CHAT");
         loginText.setBackground(new Color(220,247,246));
+        loginText.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 30));
         add(loginText, GridGenerator.generate(1, 0, 1, 1, 1.0));
 
         JTextField remoteTextField = new JTextField("Enter a friend's name", 30);
