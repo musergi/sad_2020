@@ -37,6 +37,7 @@ public class CardLayoutFrame {
         frame.setContentPane(contentPanel);
         frame.pack();   
         frame.setLocationByPlatform(true);
+        frame.setMinimumSize(1920, 1080);
         frame.setVisible(true);
     }
 }
