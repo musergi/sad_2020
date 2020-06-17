@@ -1,4 +1,4 @@
-# sad_2020
+# SAD
 
 In this folder, several tasks can be found. 
 
