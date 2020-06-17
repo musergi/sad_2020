@@ -46,10 +46,21 @@ class DrawBookServer:
     def serve_client(self, clientsocket):
         s = DrawBookSocket(clientsocket)
         login_info = s.recv()
+        if login_info['username'] in self.sockets:
+            logging.info('Attempted connection on already connected user')
+            s.send({'type': 'login_deny'})
+            s.socket.close()
+            return
         self.sockets[login_info['username']] = s
         s.send({'type': 'login_accept'})
         while True:
-            data = s.recv()
+            try:
+                data = s.recv()
+            except ConnectionResetError:
+                username = login_info['username']
+                del self.sockets[username]
+                logging.info(f'User {username} disconected')
+                return
             logging.info(data)
             if data['type'] == 'room_create':
                 if self.rooms.attempt_add(data['username']):

@@ -2,8 +2,10 @@ import threading
 import socket
 import tkinter as tk
 
+from functools import partial
 
 D_FONT = ('Monospace', 18)
+COLORS = ['red', 'black', 'blue', 'green', 'yellow', 'orange', 'lightblue']
 
 
 class BaseFrame(tk.Frame):
@@ -68,15 +70,21 @@ class ChatSelectionFrame(BaseFrame):
 class CanvasFrame(BaseFrame):
     def __init__(self, master, controller, **kw):
         BaseFrame.__init__(self, master, controller, **kw)
-        self.canvas = tk.Canvas(self.container, width=600, height=600)
+        self.canvas = tk.Canvas(self.container, width=600, height=600, bg='white')
         self.canvas.bind('<Button-1>', self.on_canvas_press)
         self.canvas.bind('<B1-Motion>', self.on_canvas_press)
-        self.canvas.grid(row=0, column=0)
+        self.canvas.grid(row=0, column=0, rowspan=len(COLORS))
+        for i, color in enumerate(COLORS):
+            tk.Button(self.container, bg=color, width=1, height=1, command=partial(self.set_color, color)).grid(row=i, column=1)
         self.room = None
+        self.color = COLORS[0]
 
     def on_canvas_press(self, event):
-        self.canvas.create_oval(event.x - 10, event.y - 10, event.x + 10, event.y + 10, fill='red', outline='')
-        threading.Thread(target=lambda: self.controller.socket.send({'type':'draw_data', 'x': event.x, 'y':event.y, 'c':'red', 'room':self.room, 'username':self.controller.username}), daemon=True).start()
+        self.canvas.create_oval(event.x - 10, event.y - 10, event.x + 10, event.y + 10, fill=self.color, outline='')
+        threading.Thread(target=lambda: self.controller.socket.send({'type':'draw_data', 'x': event.x, 'y':event.y, 'c':self.color, 'room':self.room, 'username':self.controller.username}), daemon=True).start()
+
+    def set_color(self, color):
+        self.color = color
 
     def listen(self):
         while True:
